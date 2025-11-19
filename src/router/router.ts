@@ -1,17 +1,15 @@
-import type {App, Component} from "vue";
-import {createRouter, createMemoryHistory, createWebHistory, createWebHashHistory, RouterHistory, Router} from "vue-router";
+import type { App, Component } from "vue";
+import { createRouter, createMemoryHistory, createWebHistory, createWebHashHistory, RouterHistory, Router, useRouter } from "vue-router";
 import { hookPlugin } from "@hook/useMVVM";
-import type {ViewModelConstructor, ViewModel} from "@/ViewModel";
-import { AppShell } from "vue-mvvm";
+import { AppShell, WritableGlobalContext, ViewModelConstructor, ViewModel } from "vue-mvvm";
 
 declare module "vue-mvvm" {
     interface AppShell {
         router: {
-            history?: "memory" | "web" | "web-hash"
+            history?: "memory" | "web" | "web-hash";
 
             views: RoutableViewModel[];
         }
-
     }
 }
 
@@ -25,10 +23,22 @@ export interface RouteAdapter {
 
 export type RoutableViewModel = ViewModelConstructor<ViewModel> & {
     component: Component;
-    route: RouteAdapter; 
+    route: RouteAdapter;
 }
 
-hookPlugin((app: App, config: AppShell) => {
+export interface RouterService {
+    navigateTo(vm: RoutableViewModel): Promise<void>;
+}
+
+function setupService(router: Router): RouterService {
+    return {
+        async navigateTo(vm: RoutableViewModel): Promise<void> {
+            await router.push(vm.route.path);
+        }
+    }
+}
+
+hookPlugin((app: App, config: AppShell, ctx: WritableGlobalContext) => {
     let history: RouterHistory;
     switch (config.router.history) {
         case "memory":
@@ -77,6 +87,8 @@ hookPlugin((app: App, config: AppShell) => {
             path: result.route.path
         }
     });
+
+    ctx.registerService("router", setupService(router));
 
     app.use(router);
 });

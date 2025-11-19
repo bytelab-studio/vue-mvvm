@@ -10,6 +10,11 @@
                 </div>
             </li>
         </ul>
+        <div>
+            <button @click="vm.openCreation()">
+                New Todo
+            </button>
+        </div>
     </div>
 </template>
 
