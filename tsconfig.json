@@ -1,11 +1,18 @@
 {
-    "files": [],
-    "references": [
-        {
-            "path": "./tsconfig.app.json"
-        },
-        {
-            "path": "./tsconfig.node.json"
+    "compilerOptions": {
+        "target": "ES2024",
+        "module": "CommonJS",
+        "forceConsistentCasingInFileNames": true,
+        "resolveJsonModule": true,
+        "esModuleInterop": true,
+        "strict": true,
+        "paths": {
+            "vue-mvvm": ["./src/core/index.ts"],
+            "@/*": ["./src/core/*", "./src/router/*"],
+            "@hook/*": ["./src/core/hooks/*"]
         }
+    },
+    "exclude": [
+        "dist/**/*"
     ]
 }

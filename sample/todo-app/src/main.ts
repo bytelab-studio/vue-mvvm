@@ -1,11 +1,10 @@
 import { createApp } from "vue"
-import App from "./App.vue"
 import { useMVVM } from "vue-mvvm";
+import { MVVMApp } from "vue-mvvm/router";
+import { AppConfig } from "./config";
 
-const app = createApp(App);
+const app = createApp(MVVMApp);
 
-// Initialize MVVM for this app. Users can also bind services here, e.g.:
-// useMVVM(app).bind('todoService', new TodoService())
-useMVVM(app);
+useMVVM(app, new AppConfig());
 
 app.mount("#app")
