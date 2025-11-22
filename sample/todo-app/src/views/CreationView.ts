@@ -1,10 +1,10 @@
-import { ref, type Component, type Ref } from "vue";
-import { ViewModel } from "vue-mvvm";
-import type { RouteAdapter, RouterService } from "vue-mvvm/router";
+import {type Component, ref, type Ref} from "vue";
+import {ViewModel} from "vue-mvvm";
+import {type RouteAdapter, RouterService} from "vue-mvvm/router";
 
 import CreationView from "./CreationView.vue";
-import type { TodoService } from "@/services/todo.service";
-import { MainViewModel } from "./MainView";
+import {TodoService} from "@/services/todo.service";
+import {MainViewModel} from "./MainView";
 
 export class CreationViewModel extends ViewModel {
     public static component: Component = CreationView;
@@ -14,15 +14,15 @@ export class CreationViewModel extends ViewModel {
 
     public title: Ref<string> = ref("");
     public description: Ref<string> = ref("");
-    
+
     private readonly todoService: TodoService;
     private readonly router: RouterService;
 
     public constructor() {
         super();
 
-        this.todoService = this.ctx.getService("todo.service");
-        this.router = this.ctx.getService("router");
+        this.todoService = this.ctx.getService(TodoService);
+        this.router = this.ctx.getService(RouterService);
     }
 
     mounted(): void | Promise<void> {

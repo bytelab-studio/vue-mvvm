@@ -1,7 +1,15 @@
-import type { App, Component } from "vue";
-import { createRouter, createMemoryHistory, createWebHistory, createWebHashHistory, RouterHistory, Router, useRouter } from "vue-router";
-import { hookPlugin } from "@hook/useMVVM";
-import { AppShell, WritableGlobalContext, ViewModelConstructor, ViewModel } from "vue-mvvm";
+import type {App, Component} from "vue";
+import {
+    createMemoryHistory,
+    createRouter,
+    createWebHashHistory,
+    createWebHistory,
+    Router,
+    RouterHistory
+} from "vue-router";
+import {hookPlugin} from "@hook/useMVVM";
+import * as syncio from "@/syncio";
+import {AppShell, ViewModel, ViewModelConstructor, WritableGlobalContext} from "vue-mvvm";
 
 declare module "vue-mvvm" {
     interface AppShell {
@@ -26,15 +34,15 @@ export type RoutableViewModel = ViewModelConstructor<ViewModel> & {
     route: RouteAdapter;
 }
 
-export interface RouterService {
-    navigateTo(vm: RoutableViewModel): Promise<void>;
-}
+export class RouterService {
+    private router: Router;
 
-function setupService(router: Router): RouterService {
-    return {
-        async navigateTo(vm: RoutableViewModel): Promise<void> {
-            await router.push(vm.route.path);
-        }
+    public constructor(router: Router) {
+        this.router = router;
+    }
+
+    public async navigateTo(vm: RoutableViewModel): Promise<void> {
+        await this.router.push(vm.route.path);
     }
 }
 
@@ -47,7 +55,7 @@ hookPlugin((app: App, config: AppShell, ctx: WritableGlobalContext) => {
         case "web-hash":
             history = createWebHashHistory();
             break;
-        case "memory":
+        case "web":
         default:
             history = createWebHistory();
             break;
@@ -74,10 +82,7 @@ hookPlugin((app: App, config: AppShell, ctx: WritableGlobalContext) => {
         if (!metadata.route.guard) {
             return;
         }
-        let result: RouteAdapterGuardReturn = metadata.route.guard();
-        if (result instanceof Promise) {
-            result = await result;
-        }
+        let result: Awaited<RouteAdapterGuardReturn> = await syncio.ensureSync(metadata.route.guard());
 
         if (typeof result == "boolean" && result) {
             return true;
@@ -88,7 +93,6 @@ hookPlugin((app: App, config: AppShell, ctx: WritableGlobalContext) => {
         }
     });
 
-    ctx.registerService("router", setupService(router));
-
+    ctx.registerService(RouterService, () => new RouterService(router));
     app.use(router);
 });

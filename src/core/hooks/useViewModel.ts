@@ -4,6 +4,12 @@ import {ViewModel, type ViewModelConstructor} from "@/ViewModel";
 export function useViewModel<T extends ViewModel>(vmCLS: ViewModelConstructor<T>): T {
     const vm: T = new vmCLS();
 
+    useViewModelInstance(vm);
+
+    return vm;
+}
+
+export function useViewModelInstance<T extends ViewModel>(vm: T): void {
     onBeforeMount(() => vm.beforeMount());
     onMounted(() => vm.mounted());
 
@@ -15,6 +21,4 @@ export function useViewModel<T extends ViewModel>(vmCLS: ViewModelConstructor<T>
 
     onActivated(() => vm.activated());
     onDeactivated(() => vm.deactivated());
-
-    return vm;
 }

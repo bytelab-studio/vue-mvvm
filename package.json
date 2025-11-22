@@ -19,10 +19,8 @@
         }
     },
     "scripts": {
-        "build:dev": "tsdown --entry.vue-mvvm ./src/core/index.ts --entry.vue-mvvm-router ./src/router/index.ts --format esm --dts --watch",
-        "dev": "vite",
-        "build": "vite build && vue-tsc --declaration --emitDeclarationOnly",
-        "preview": "vite preview"
+        "build:dev": "tsdown --entry.vue-mvvm ./src/core/index.ts --entry.vue-mvvm-router ./src/router/index.ts --sourcemap --format esm --dts --watch",
+        "build:prod": "tsdown --entry.vue-mvvm ./src/core/index.ts --entry.vue-mvvm-router ./src/router/index.ts --format esm --dts --minify"
     },
     "peerDependencies": {
         "vue": "^3.5.24",

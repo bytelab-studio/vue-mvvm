@@ -6,7 +6,7 @@ type PluginHook = (app: App, config: AppShell, ctx: WritableGlobalContext) => vo
 
 const hooks: PluginHook[] = [];
 
-export function hookPlugin(cb: PluginHook) {
+export function hookPlugin(cb: PluginHook): void {
     hooks.push(cb);
 }
 

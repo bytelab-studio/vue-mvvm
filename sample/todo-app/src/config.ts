@@ -12,6 +12,6 @@ export class AppConfig implements AppShell {
     }
 
     configureServices(ctx: WritableGlobalContext): void {
-        ctx.registerService("todo.service", new TodoService());
+        ctx.registerService(TodoService, () => new TodoService());
     }
 }

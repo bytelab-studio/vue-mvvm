@@ -9,7 +9,8 @@
         "paths": {
             "vue-mvvm": ["./src/core/index.ts"],
             "@/*": ["./src/core/*", "./src/router/*"],
-            "@hook/*": ["./src/core/hooks/*"]
+            "@hook/*": ["./src/core/hooks/*"],
+            "@provider/*": ["./src/core/providers/*"]
         }
     },
     "exclude": [
