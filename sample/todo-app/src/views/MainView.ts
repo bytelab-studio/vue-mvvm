@@ -1,5 +1,5 @@
 import {type Component, computed, type ComputedRef, ref, type Ref} from "vue";
-import {ViewModel, DialogService} from "vue-mvvm";
+import {type ActionResult, DialogService, ViewModel} from "vue-mvvm";
 import {type RouteAdapter, RouterService} from "vue-mvvm/router";
 
 import MainView from "@/views/MainView.vue";
@@ -48,14 +48,16 @@ export class MainViewModel extends ViewModel {
         const dialog: EditDialogControl = this.dialog.initDialog(EditDialogControl, todo);
         await dialog.openDialog();
 
-        const editedTodo: Todo = await this.runAction(dialog);
+        const result: ActionResult<Todo> = await this.runAction(dialog);
+        if (result.success) {
+            const editedTodo: Todo = result.data;
+            todo.title = editedTodo.title;
+            todo.description = editedTodo.description;
+            todo.done = editedTodo.done;
+            this.todoService.updateTodo(todo);
+        }
 
         await dialog.closeDialog();
         dialog.destroy();
-
-        todo.title = editedTodo.title;
-        todo.description = editedTodo.description;
-        todo.done = editedTodo.done;
-        this.todoService.updateTodo(todo);
     }
 }

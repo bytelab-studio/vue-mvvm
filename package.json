@@ -2,10 +2,19 @@
     "name": "vue-mvvm",
     "private": true,
     "version": "0.0.0",
-    "type": "module",
-    "files": [
-        "dist"
+    "description": "Lightweight MVVM utilities for Vue 3 with typed ViewModels, UserControls, simple DI and more",
+    "keywords": [
+        "vue",
+        "mvvm",
+        "composition-api",
+        "vue-mvvm",
+        "typescript"
     ],
+    "license": "MIT",
+    "author": "Christoph Koschel",
+    "bugs": "https://github.com/bytelab-studio/vue-mvvm/issues",
+    "homepage": "https://iconify-cli.bytelab.studio",
+    "repository": "https://github.com/bytelab-studio/vue-mvvm",
     "main": "./dist/vue-mvvm.mjs",
     "types": "./dist/vue-mvvm.d.mts",
     "exports": {
@@ -18,17 +27,23 @@
             "types": "./dist/vue-mvvm-router.d.mts"
         }
     },
+    "type": "module",
+    "files": [
+        "dist",
+        "README.md",
+        "LICENSE"
+    ],
     "scripts": {
         "build:dev": "tsdown --entry.vue-mvvm ./src/core/index.ts --entry.vue-mvvm-router ./src/router/index.ts --sourcemap --format esm --dts --watch",
         "build:prod": "tsdown --entry.vue-mvvm ./src/core/index.ts --entry.vue-mvvm-router ./src/router/index.ts --format esm --dts --minify"
-    },
+  },
     "peerDependencies": {
         "vue": "^3.5.24",
         "vue-router": "^4.6.3"
     },
     "devDependencies": {
-        "@types/node": "^24.10.1",
-        "tsdown": "^0.16.5",
-        "typescript": "~5.9.3"
-    }
+    "@types/node": "^24.10.1",
+    "tsdown": "^0.16.5",
+    "typescript": "~5.9.3"
+  }
 }

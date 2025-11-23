@@ -81,10 +81,17 @@ export class RouterService {
     /**
      * Programmatically navigate to a new ViewModel by pushing an entry in the history stack.
      *
-     * @param vm - A routeable ViewModel
+     * @param vm - A routable ViewModel
      */
     public async navigateTo(vm: RoutableViewModel): Promise<void> {
         await this.router.push(vm.route.path);
+    }
+
+    /**
+     * Go back in history if possible
+     */
+    public navigateBack(): void {
+        this.router.back();
     }
 }
 
