@@ -1,6 +1,6 @@
 // Hooks
 export {useViewModel} from "@hook/useViewModel";
-export * from "@hook/useUserControl";
+export {useUserControl} from "@hook/useUserControl";
 export {useDialogControl} from "@hook/useDialogControl";
 export type {ReadableGlobalContext, WritableGlobalContext} from "@hook/useGlobalContext";
 export {useMVVM} from "@hook/useMVVM";
