@@ -1,3 +1,7 @@
+![NPM Version](https://img.shields.io/npm/v/vue-mvvm)
+![NPM Version](https://img.shields.io/npm/l/vue-mvvm)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/bytelab-studio/vue-mvvm/cd.yml?label=CD)
+
 # vue-mvvm
 
 A lightweight set of MVVM utilities for Vue 3 that helps you structure apps with typed ViewModels, reusable
