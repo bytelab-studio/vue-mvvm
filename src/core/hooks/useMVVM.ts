@@ -6,10 +6,21 @@ type PluginHook = (app: App, config: AppShell, ctx: WritableGlobalContext) => vo
 
 const hooks: PluginHook[] = [];
 
+/**
+ * @internal
+ */
 export function hookPlugin(cb: PluginHook): void {
     hooks.push(cb);
 }
 
+/**
+ * Configures and prepares a Vue.js App to use the MVVM Library
+ *
+ * @param {App} app         - The application instance that will be configured.
+ * @param {AppShell} config - The configuration object used to set up services and hooks for the application.
+ *
+ * @return The input {@link app} for function chaining
+ */
 export function useMVVM(app: App, config: AppShell): App {
     const ctx: WritableGlobalContext = useGlobalContext();
 

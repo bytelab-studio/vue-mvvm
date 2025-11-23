@@ -1,20 +1,30 @@
 import {onBeforeMount, onBeforeUnmount, onBeforeUpdate, onMounted, onUnmounted, onUpdated, onActivated, onDeactivated} from "vue";
 import {ViewModel, type ViewModelConstructor} from "@/ViewModel";
 
-export function useViewModel<T extends ViewModel>(vmCLS: ViewModelConstructor<T>): T {
-    const vm: T = new vmCLS();
+/**
+ * Binds a ViewModel to the current View
+ *
+ * @param cls - The ViewModel that should be instantiated
+ *
+ * @returns A instance of the given ViewModel class
+ */
+export function useViewModel<T extends ViewModel>(cls: ViewModelConstructor<T>): T {
+    const vm: T = new cls();
 
     useViewModelInstance(vm);
 
     return vm;
 }
 
-export function useViewModelInstance<T extends ViewModel>(vm: T): void {
+/**
+ * @internal
+ */
+export function useViewModelInstance(vm: ViewModel): void {
     onBeforeMount(() => vm.beforeMount());
     onMounted(() => vm.mounted());
 
     onBeforeUpdate(() => vm.beforeUpdate());
-    onUpdated(() => vm.beforeUpdate());
+    onUpdated(() => vm.updated());
 
     onBeforeUnmount(() => vm.beforeUnmount());
     onUnmounted(() => vm.unmounted());

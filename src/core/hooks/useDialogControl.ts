@@ -3,9 +3,15 @@ import {DialogControl, DialogControlConstructor} from "vue-mvvm";
 import {useViewModelInstance} from "@hook/useViewModel";
 import {DialogControlMismatchError, HookUsageError, MissingComponentMetadataError} from "@/errors";
 
-// export const propSymbol: symbol = Symbol("vue-mvvm-dialog-control");
-export const propSymbol: string = "vue-mvvm-dialog-control";
+export const propSymbol: symbol = Symbol("vue-mvvm-dialog-control");
 
+/**
+ * Binds a DialogControl to the current View
+ *
+ * @param cls - The ViewModel that should be instantiated
+ *
+ * @returns A instance of the given ViewModel class
+ */
 export function useDialogControl<Instance extends DialogControl>(cls: DialogControlConstructor<Instance, any[]>): Instance {
     const instance: ComponentInternalInstance | null = getCurrentInstance();
     if (!instance) {
@@ -16,7 +22,7 @@ export function useDialogControl<Instance extends DialogControl>(cls: DialogCont
         throw new MissingComponentMetadataError("Dialog");
     }
 
-    const control: DialogControl | undefined = instance.vnode.props[propSymbol];
+    const control: DialogControl | undefined = (instance.vnode.props as any)[propSymbol];
     if (control instanceof cls) {
         useViewModelInstance(control);
         return control;

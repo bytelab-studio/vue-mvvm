@@ -1,6 +1,3 @@
-// Centralized, typed error classes to improve DX and make common
-// misconfiguration issues easier to diagnose and catch.
-
 export class MVVMError extends Error {
   constructor(message: string) {
     super(message);

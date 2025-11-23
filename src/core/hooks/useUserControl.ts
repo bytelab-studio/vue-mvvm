@@ -4,7 +4,18 @@ import { TemplateRef, useTemplateRef } from "vue";
 
 const exposeSymbol: symbol = Symbol("vue-mvvm-user-control");
 
-export function useUserControl<T extends UserControl>(vmCLS: UserControlConstructor<T>): T;
+/**
+ * Binds a UserControl to the current View
+ *
+ * @param cls - The ViewModel that should be instantiated
+ *
+ * @returns A instance of the given ViewModel class
+ */
+export function useUserControl<T extends UserControl>(cls: UserControlConstructor<T>): T;
+
+/**
+ * @internal
+ */
 export function useUserControl<T extends UserControl>(ref: string): T;
 
 export function useUserControl<T extends UserControl>(arg0: UserControlConstructor<T> | string): T {
