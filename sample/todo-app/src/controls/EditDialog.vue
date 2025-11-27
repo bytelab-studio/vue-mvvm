@@ -3,11 +3,11 @@
         <div class="content">
             <form @submit.prevent="vm.onSubmit">
                 <h1>Edit: {{ vm.todo.title }}</h1>
-                <input v-model="vm.title.value" type="text" placeholder="Title" />
-                <textarea v-model="vm.description.value" placeholder="Description"></textarea>
+                <input v-model="vm.title" type="text" placeholder="Title" />
+                <textarea v-model="vm.description" placeholder="Description"></textarea>
                 <label>
                     <span>Done</span>
-                    <input type="checkbox" :checked="vm.done.value" @click="vm.done.value = !vm.done.value" />
+                    <input type="checkbox" :checked="vm.done" @click="vm.done = !vm.done" />
                 </label>
                 <button type="submit">
                     Save

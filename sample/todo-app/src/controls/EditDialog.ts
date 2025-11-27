@@ -10,9 +10,9 @@ export class EditDialogControl extends DialogControl implements Action<Todo>{
     private actionContext: ActionContext<Todo> | null;
 
     public readonly todo: Todo;
-    public title: Ref<string>;
-    public description: Ref<string>;
-    public done: Ref<boolean>;
+    public title: string;
+    public description: string;
+    public done: boolean;
 
     public constructor(todo: Todo) {
         super();
@@ -21,9 +21,9 @@ export class EditDialogControl extends DialogControl implements Action<Todo>{
 
         this.todo = todo;
 
-        this.title = ref(todo.title);
-        this.description = ref(todo.description);
-        this.done = ref(todo.done);
+        this.title = this.ref(todo.title);
+        this.description = this.ref(todo.description);
+        this.done = this.ref(todo.done);
     }
 
     public mounted(): void | Promise<void> {
@@ -48,10 +48,11 @@ export class EditDialogControl extends DialogControl implements Action<Todo>{
         }
 
         this.actionContext.completeAction({
-            title: this.title.value,
-            description: this.description.value,
-            done: this.done.value
+            title: this.title,
+            description: this.description,
+            done: this.done
         });
+        this.actionContext = null;
     }
 
     public async onCancel(): Promise<void> {

@@ -18,10 +18,10 @@ export class MainViewModel extends ViewModel {
     private dialog: DialogService;
     private router: RouterService;
     private todoService: TodoService;
-    private todos: Ref<Todo[]> = ref([]);
+    private todos: Todo[] = this.ref([]);
 
-    public finishedTodos: ComputedRef<Todo[]> = computed(() => this.todos.value.filter(todo => todo.done));
-    public unfinishedTodos: ComputedRef<Todo[]> = computed(() => this.todos.value.filter(todo => !todo.done));
+    public finishedTodos: Todo[] = this.computed(() => this.todos.filter(todo => todo.done));
+    public unfinishedTodos: Todo[] = this.computed(() => this.todos.filter(todo => !todo.done));
 
     public constructor() {
         super();
@@ -32,7 +32,7 @@ export class MainViewModel extends ViewModel {
     }
 
     mounted(): void | Promise<void> {
-        this.todos.value = this.todoService.getTodos();
+        this.todos = this.todoService.getTodos();
     }
 
     public markAsComplete(todo: Todo): void {

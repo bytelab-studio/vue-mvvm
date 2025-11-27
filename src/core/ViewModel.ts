@@ -1,5 +1,7 @@
 import {type Component, TemplateRef, useTemplateRef} from "vue";
+import * as vue from "vue";
 import * as syncio from "@/syncio";
+import * as reactive from "@/reactive";
 import {type ReadableGlobalContext, useGlobalContext} from "@hook/useGlobalContext";
 import {exposeSymbol as userControlSymbol} from "@hook/useUserControl"
 import {Action, ActionContext, ActionResult} from "@/Action";
@@ -27,6 +29,8 @@ export class ViewModel {
 
     public constructor() {
         this.ctx = useGlobalContext(true);
+
+        return reactive.applyReactivity(this);
     }
 
     /**
@@ -153,5 +157,15 @@ export class ViewModel {
         }
 
         throw new Error(`UserControl '${ref}' is missing metadata`);
+    }
+
+    protected ref<T>(initial: T): T {
+        return reactive.ref(initial) as T;
+    }
+
+    protected computed<T>(getter: vue.ComputedGetter<T>): T;
+    protected computed<T>(options: { get: vue.ComputedGetter<T>, set: vue.ComputedSetter<T> }): T;
+    protected computed<T>(arg: any): T {
+        return reactive.computed(arg) as T;
     }
 }

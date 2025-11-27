@@ -1,8 +1,8 @@
 <template>
     <form class="form" @submit.prevent="vm.onSubmit">
         <h1 class="title">New Todo</h1>
-        <input v-model="vm.title.value" class="input" type="text" required placeholder="Title" />
-        <textarea v-model="vm.description.value" class="textarea" placeholder="Description" required></textarea>
+        <input v-model="vm.title" class="input" type="text" required placeholder="Title" />
+        <textarea v-model="vm.description" class="textarea" placeholder="Description" required></textarea>
         <button class="btn primary" type="submit">
             Create
         </button>

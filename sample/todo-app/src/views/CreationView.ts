@@ -12,8 +12,8 @@ export class CreationViewModel extends ViewModel {
         path: "/create"
     }
 
-    public title: Ref<string> = ref("");
-    public description: Ref<string> = ref("");
+    public title: string = this.ref("");
+    public description: string = this.ref("");
 
     private readonly todoService: TodoService;
     private readonly router: RouterService;
@@ -26,14 +26,14 @@ export class CreationViewModel extends ViewModel {
     }
 
     mounted(): void | Promise<void> {
-        this.title.value = "";
-        this.description.value = "";
+        this.title = "";
+        this.description = "";
     }
 
     public async onSubmit(): Promise<void> {
         this.todoService.addTodo({
-            title: this.title.value,
-            description: this.description.value,
+            title: this.title,
+            description: this.description,
             done: false
         });
 

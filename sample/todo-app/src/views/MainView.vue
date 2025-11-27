@@ -2,7 +2,7 @@
     <div class="container">
         <h1 class="title">Todos</h1>
         <ul class="todo-list">
-            <li v-for="todo of vm.unfinishedTodos.value" :key="todo.title" class="todo-item">
+            <li v-for="todo of vm.unfinishedTodos" :key="todo.title" class="todo-item">
                 <div class="todo-card" :class="{ done: todo.done }">
                     <div class="todo-text">
                         <h2 class="todo-title">{{ todo.title }}</h2>
@@ -17,7 +17,7 @@
             <li>
                 <hr />
             </li>
-            <li v-for="todo of vm.finishedTodos.value" :key="todo.title" class="todo-item">
+            <li v-for="todo of vm.finishedTodos" :key="todo.title" class="todo-item">
                 <div class="todo-card" :class="{ done: todo.done }">
                     <div class="todo-text">
                         <h2 class="todo-title">{{ todo.title }}</h2>
