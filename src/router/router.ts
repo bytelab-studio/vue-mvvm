@@ -1,4 +1,4 @@
-import {App, withScopeId} from "vue";
+import {App} from "vue";
 import {
     createMemoryHistory,
     createRouter,
@@ -7,7 +7,7 @@ import {
     Router,
     RouterHistory
 } from "vue-router";
-import {hookPlugin} from "@hook/useMVVM";
+import {hookPlugin} from "@/plugin";
 import * as syncio from "@/syncio";
 import {AppShell, ViewModelConstructor, WritableGlobalContext} from "vue-mvvm";
 
