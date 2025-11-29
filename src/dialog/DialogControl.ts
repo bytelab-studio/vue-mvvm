@@ -1,6 +1,6 @@
-import * as syncio from "@/syncio";
-import {UserControl, type UserControlConstructor} from "@/UserControl";
 import {readonly, ref, Ref, warn} from "vue";
+
+import {UserControl, type UserControlConstructor, syncio} from "vue-mvvm";
 
 /**
  * A type definition for a valid DialogControl class constructor.

@@ -1,5 +1,6 @@
-import {type Component, ref, type Ref} from "vue";
-import {DialogControl, type Action, ActionContext} from "vue-mvvm";
+import {type Component} from "vue";
+import {type Action, ActionContext} from "vue-mvvm";
+import {DialogControl} from "vue-mvvm/dialog";
 
 import EditDialog from "@/controls/EditDialog.vue";
 import type {Todo} from "@/models/todo.ts";

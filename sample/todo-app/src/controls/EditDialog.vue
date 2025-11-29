@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import {EditDialogControl} from "@/controls/EditDialog.ts";
-import {useDialogControl} from "vue-mvvm";
+import {useDialogControl} from "vue-mvvm/dialog";
 
 const vm: EditDialogControl = useDialogControl(EditDialogControl);
 </script>

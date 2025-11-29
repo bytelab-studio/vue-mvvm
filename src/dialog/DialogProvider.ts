@@ -1,6 +1,7 @@
 import {defineComponent, Fragment, h} from "vue";
-import {useGlobalContext, type WritableGlobalContext} from "@hook/useGlobalContext";
-import {propSymbol as dialogControlSymbol} from "@hook/useDialogControl";
+
+import {propSymbol as dialogControlSymbol} from "@/hooks/useDialogControl";
+
 import type {DialogControl, DialogControlConstructor} from "@/DialogControl";
 import {WeakArray} from "@/WeakArray";
 
@@ -68,8 +69,6 @@ export class DialogService {
     }
 }
 
-let registered: boolean = false;
-
 /**
  * DialogProvider is a Vue.js component responsible for managing and rendering DialogControls dynamically.
  *
@@ -77,13 +76,6 @@ let registered: boolean = false;
  */
 export const DialogProvider = defineComponent({
     name: "DialogProvider",
-    beforeCreate() {
-        if (!registered) {
-            const ctx: WritableGlobalContext = useGlobalContext();
-            ctx.registerService(DialogService, () => new DialogService());
-            registered = true;
-        }
-    },
     mounted(): any {
         providerRegistry.add(this.$forceUpdate.bind(this));
     },

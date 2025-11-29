@@ -1,6 +1,7 @@
-import {type Component, computed, type ComputedRef, ref, type Ref} from "vue";
-import {type ActionResult, DialogService, ViewModel} from "vue-mvvm";
+import {type Component} from "vue";
+import {type ActionResult, ViewModel} from "vue-mvvm";
 import {type RouteAdapter, RouterService} from "vue-mvvm/router";
+import {DialogService} from "vue-mvvm/dialog";
 
 import MainView from "@/views/MainView.vue";
 import {TodoService} from "@/services/todo.service";

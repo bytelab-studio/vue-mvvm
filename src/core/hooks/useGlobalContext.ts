@@ -3,6 +3,7 @@ import {
     ServiceAlreadyRegisteredError,
     ServiceNotRegisteredError
 } from "@/errors";
+import {Component} from "vue";
 
 export type FactoryFunction<T> = (ctx: ReadableGlobalContext) => T;
 
@@ -10,6 +11,13 @@ export type FactoryFunction<T> = (ctx: ReadableGlobalContext) => T;
  * Provides a interface for accessing the global context
  */
 export interface WritableGlobalContext extends ReadableGlobalContext {
+    /**
+     * Registers a provider component
+     *
+     * @param component - The provider component
+     */
+    registerProvider(component: Component): void;
+
     /**
      * Registers a service with a specified key and factory function.
      *
@@ -33,6 +41,11 @@ export interface WritableGlobalContext extends ReadableGlobalContext {
  */
 export interface ReadableGlobalContext {
     /**
+     * Return all registered providers
+     */
+    getProviders(): Component[];
+
+    /**
      * Retrieves a service instance corresponding to the provided class or constructor function.
      *
      * @param key - The class or constructor function that represents the service to retrieve.
@@ -42,8 +55,13 @@ export interface ReadableGlobalContext {
     getService<T extends new (...args: any[]) => any>(key: T): InstanceType<T>;
 }
 
+const providers: Set<Component> = new Set<Component>();
 const services: Map<unknown, FactoryFunction<unknown>> = new Map<unknown, FactoryFunction<unknown>>();
 const serviceInstances: Map<unknown, unknown> = new Map<unknown, unknown>();
+
+function registerProvider(provider: Component): void {
+    providers.add(provider);
+}
 
 function registerService<T extends new (...args: any[]) => any>(key: T, handler: FactoryFunction<InstanceType<T>>): void {
     if (services.has(key)) {
@@ -59,6 +77,10 @@ function mockService(key: new (...args: any[]) => any, handler: FactoryFunction<
     }
 
     services.set(key, handler);
+}
+
+function getProviders(): Component[] {
+    return Array.from(providers);
 }
 
 function getService<T extends new (...args: any[]) => any>(key: T): InstanceType<T> {
@@ -94,15 +116,21 @@ export function useGlobalContext(readonly?: false): WritableGlobalContext;
 export function useGlobalContext(readonly?: boolean): ReadableGlobalContext | WritableGlobalContext {
     if (readonly) {
         return {
+            getProviders,
+
             getService
         };
     }
 
     return {
+        getProviders,
+
         getService,
 
         registerService,
 
         mockService,
+
+        registerProvider
     };
 }

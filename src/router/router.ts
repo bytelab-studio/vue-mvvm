@@ -5,11 +5,17 @@ import {
     createWebHashHistory,
     createWebHistory,
     Router,
-    RouterHistory
+    RouterHistory,
+    RouterView
 } from "vue-router";
+import {
+    AppShell,
+    ViewModelConstructor,
+    WritableGlobalContext,
+    syncio
+} from "vue-mvvm";
+
 import {hookPlugin} from "@/plugin";
-import * as syncio from "@/syncio";
-import {AppShell, ViewModelConstructor, WritableGlobalContext} from "vue-mvvm";
 
 declare module "vue-mvvm" {
     interface AppShell {
@@ -240,6 +246,7 @@ hookPlugin((app: App, config: AppShell, ctx: WritableGlobalContext) => {
         }
     });
 
+    ctx.registerProvider(RouterView);
     ctx.registerService(RouterService, () => new RouterService(router));
     app.use(router);
 });

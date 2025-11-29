@@ -8,9 +8,8 @@
         "strict": true,
         "paths": {
             "vue-mvvm": ["./src/core/index.ts"],
-            "@/*": ["./src/core/*", "./src/router/*"],
-            "@hook/*": ["./src/core/hooks/*"],
-            "@provider/*": ["./src/core/providers/*"]
+            "@/*": ["./src/core/*", "./src/router/*", "./src/dialog/*"],
+            "@hook/*": ["./src/core/hooks/*", "./src/dialog/hooks/*"]
         }
     },
     "exclude": [
