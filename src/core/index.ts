@@ -1,7 +1,14 @@
 // Hooks
 export {useViewModel} from "@hook/useViewModel";
 export {useUserControl} from "@hook/useUserControl";
-export type {ReadableGlobalContext, WritableGlobalContext} from "@hook/useGlobalContext";
+export {
+    type ReadableGlobalContext,
+    type WritableGlobalContext,
+    ServiceKey,
+    AsyncServiceKey,
+    type FactoryFunction,
+    type AsyncFactoryFunction
+} from "@/context";
 
 // Shell classes
 export * from "@/ViewModel";

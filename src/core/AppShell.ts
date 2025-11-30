@@ -1,4 +1,4 @@
-import type { WritableGlobalContext } from "@hook/useGlobalContext";
+import type { WritableGlobalContext } from "@/context";
 
 /**
  * Represents the configuration shell of an MVVM application.

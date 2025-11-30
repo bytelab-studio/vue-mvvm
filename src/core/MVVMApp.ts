@@ -1,6 +1,6 @@
 import {defineComponent, h, Fragment} from "vue";
 
-import {type ReadableGlobalContext, useGlobalContext} from "@hook/useGlobalContext";
+import {type ReadableGlobalContext, useGlobalContext} from "@/context";
 
 /**
  * Can be used as the application entry point, when no further App layouting is required.

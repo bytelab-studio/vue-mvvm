@@ -1,11 +1,9 @@
-import {
-    InvalidServiceInstanceError,
-    ServiceAlreadyRegisteredError,
-    ServiceNotRegisteredError
-} from "@/errors";
+import {InvalidServiceInstanceError, ServiceAlreadyRegisteredError, ServiceNotRegisteredError} from "@/errors";
 import {Component} from "vue";
 
 export type FactoryFunction<T> = (ctx: ReadableGlobalContext) => T;
+
+export type AsyncFactoryFunction<T> = (ctx: ReadableGlobalContext) => Promise<T>;
 
 /**
  * Provides a interface for accessing the global context
@@ -25,6 +23,10 @@ export interface WritableGlobalContext extends ReadableGlobalContext {
      * @param factory - A factory function that creates an instance of the service associated with the provided key.
      */
     registerService<T extends new (...args: any[]) => any>(key: T, factory: FactoryFunction<InstanceType<T>>): void;
+
+    registerService<T>(key: ServiceKey<T>, factory: FactoryFunction<T>): void;
+
+    registerService<T>(key: AsyncServiceKey<T>, factory: AsyncFactoryFunction<T>): void;
 
     /**
      * Mocks a service by providing a custom implementation for the specified key.
@@ -56,14 +58,20 @@ export interface ReadableGlobalContext {
 }
 
 const providers: Set<Component> = new Set<Component>();
-const services: Map<unknown, FactoryFunction<unknown>> = new Map<unknown, FactoryFunction<unknown>>();
+const services: Map<unknown, FactoryFunction<unknown> | AsyncFactoryFunction<unknown>> = new Map<unknown, FactoryFunction<unknown> | AsyncFactoryFunction<unknown>>();
 const serviceInstances: Map<unknown, unknown> = new Map<unknown, unknown>();
 
 function registerProvider(provider: Component): void {
     providers.add(provider);
 }
 
-function registerService<T extends new (...args: any[]) => any>(key: T, handler: FactoryFunction<InstanceType<T>>): void {
+function registerService<T>(key: ServiceKey<T>, handler: FactoryFunction<T>): void;
+
+function registerService<T>(key: AsyncServiceKey<T>, handler: AsyncFactoryFunction<T>): void
+
+function registerService<T extends new (...args: any[]) => any>(key: T, handler: FactoryFunction<InstanceType<T>>): void;
+
+function registerService<T>(key: T | ServiceKey<T> | AsyncServiceKey<T>, handler: FactoryFunction<unknown> | AsyncFactoryFunction<unknown>): void {
     if (services.has(key)) {
         throw new ServiceAlreadyRegisteredError(key);
     }
@@ -83,17 +91,38 @@ function getProviders(): Component[] {
     return Array.from(providers);
 }
 
-function getService<T extends new (...args: any[]) => any>(key: T): InstanceType<T> {
-    let instance: InstanceType<T> | undefined = serviceInstances.get(key) as InstanceType<T> | undefined;
+function getService<T extends new (...args: any[]) => any>(key: T): InstanceType<T>;
+
+function getService<T>(key: ServiceKey<T>): T;
+
+function getService<T>(key: AsyncServiceKey<T>): Promise<T>;
+
+function getService<T>(key: T | ServiceKey<T> | AsyncServiceKey<T>): unknown | Promise<unknown> {
+    let instance: unknown | undefined = serviceInstances.get(key);
 
     if (instance) {
         return instance;
     }
 
-    const factory: FactoryFunction<InstanceType<T>> | undefined = services.get(key) as FactoryFunction<InstanceType<T>> | undefined;
+    const factory: FactoryFunction<unknown> | AsyncFactoryFunction<unknown> | undefined = services.get(key);
+
     if (!factory) {
         throw new ServiceNotRegisteredError(key);
     }
+
+    if (key instanceof AsyncServiceKey) {
+        return new Promise<unknown>(async (resolve, reject) => {
+            const instance: unknown = await factory(useGlobalContext(true));
+            if (!instance) {
+                reject(new InvalidServiceInstanceError(key));
+                return;
+            }
+
+            serviceInstances.set(key, instance);
+            resolve(instance);
+        });
+    }
+
     instance = factory(useGlobalContext(true));
     if (!instance) {
         throw new InvalidServiceInstanceError(key);
@@ -101,6 +130,16 @@ function getService<T extends new (...args: any[]) => any>(key: T): InstanceType
 
     serviceInstances.set(key, instance);
     return instance;
+}
+
+export class ServiceKey<T> {
+    public constructor() {
+    }
+}
+
+export class AsyncServiceKey<T> {
+    public constructor() {
+    }
 }
 
 /**

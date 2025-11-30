@@ -1,7 +1,7 @@
 import {type App, type Component, type Plugin} from "vue";
 
 import {AppShell} from "@/AppShell";
-import {useGlobalContext, WritableGlobalContext} from "@hook/useGlobalContext";
+import {useGlobalContext, WritableGlobalContext} from "@/context";
 
 type PluginHook = (app: App, config: AppShell, ctx: WritableGlobalContext) => void;
 

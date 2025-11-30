@@ -2,7 +2,7 @@ import {type Component, TemplateRef, useTemplateRef} from "vue";
 import * as vue from "vue";
 import * as syncio from "@/syncio";
 import * as reactive from "@/reactive";
-import {type ReadableGlobalContext, useGlobalContext} from "@hook/useGlobalContext";
+import {type ReadableGlobalContext, useGlobalContext} from "@/context";
 import {exposeSymbol as userControlSymbol} from "@hook/useUserControl"
 import {Action, ActionContext, ActionResult} from "@/Action";
 import {UserControl} from "@/UserControl";
