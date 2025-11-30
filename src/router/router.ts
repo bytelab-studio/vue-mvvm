@@ -1,15 +1,21 @@
-import type {App} from "vue";
+import {App} from "vue";
 import {
     createMemoryHistory,
     createRouter,
     createWebHashHistory,
     createWebHistory,
     Router,
-    RouterHistory
+    RouterHistory,
+    RouterView
 } from "vue-router";
-import {hookPlugin} from "@hook/useMVVM";
-import * as syncio from "@/syncio";
-import {AppShell, ViewModelConstructor, WritableGlobalContext} from "vue-mvvm";
+import {
+    AppShell,
+    ViewModelConstructor,
+    WritableGlobalContext,
+    syncio
+} from "vue-mvvm";
+
+import {hookPlugin} from "@/plugin";
 
 declare module "vue-mvvm" {
     interface AppShell {
@@ -37,6 +43,26 @@ declare module "vue-mvvm" {
 
 type RouteAdapterGuardReturn = true | RoutableViewModel | Promise<true | RoutableViewModel>;
 
+type RouteParamTypes = "integer" | "string";
+
+type RouteParamTypeMap = {
+    integer: number;
+    string: string;
+}
+
+type ExtractRouteParams<VM extends RoutableViewModel> = VM["route"] extends { params: infer R } ? R : undefined;
+
+type RouteParamsParameter<VM extends RoutableViewModel> =
+    ExtractRouteParams<VM> extends Record<string, any>
+        ? keyof ExtractRouteParams<VM> extends never
+            ? [] | [{}]
+            : [{
+                [K in keyof ExtractRouteParams<VM>]: ExtractRouteParams<VM>[K] extends keyof RouteParamTypeMap
+                    ? RouteParamTypeMap[ExtractRouteParams<VM>[K]]
+                    : never;
+            }]
+        : [] | [{}];
+
 /**
  * Adapter to expose routing information used by the RouterService.
  */
@@ -56,6 +82,11 @@ export interface RouteAdapter {
      * The path that the Item should listen to. Follows the same syntax like the vue-router path definition syntax
      */
     path: string;
+
+    /**
+     * The type definition of path parameters ("/:myID") in the path property
+     */
+    params?: Record<string, RouteParamTypes>;
 }
 
 export type RoutableViewModel = ViewModelConstructor & {
@@ -66,9 +97,9 @@ export type RoutableViewModel = ViewModelConstructor & {
 }
 
 /**
- * Represents an MVVM service wrapper around the `vue-router` functions.
+ * Wrapper class for resolving path parameters
  */
-export class RouterService {
+export class RouterParams {
     private router: Router;
 
     /**
@@ -79,12 +110,83 @@ export class RouterService {
     }
 
     /**
+     * Returns a route parameter as integer.
+     */
+    public getInteger(name: string): number {
+        const raw: string | string[] | undefined = this.router.currentRoute.value.params[name as any];
+        if (typeof raw == "undefined") {
+            throw new Error(`Route parameter '${name}' was not found`);
+        }
+
+        if (Array.isArray(raw)) {
+            throw new Error(`Route parameter '${name}' is not a valid integer`);
+        }
+
+        // Strict integer check (no spaces, no decimals)
+        if (!/^-?\d+$/.test(raw)) {
+            throw new Error(`Route parameter '${name}' is not a valid integer`);
+        }
+
+        const value: number = Number.parseInt(raw);
+        if (!Number.isFinite(value)) {
+            throw new Error(`Route parameter '${name}' is not a valid integer`);
+        }
+
+        return value;
+    }
+
+    /**
+     * Returns a route parameter as string.
+     */
+    public getString(name: string): string {
+        const raw: string | string[] | undefined = this.router.currentRoute.value.params[name as any];
+        if (typeof raw == "undefined") {
+            throw new Error(`Route parameter '${name}' was not found`);
+        }
+
+        if (Array.isArray(raw)) {
+            throw new Error(`Route parameter '${name}' is not a valid string`);
+        }
+
+        return raw;
+    }
+}
+
+/**
+ * Represents an MVVM service wrapper around the `vue-router` functions.
+ */
+export class RouterService {
+    private router: Router;
+
+    public readonly params: RouterParams;
+
+    /**
+     * @internal
+     */
+    public constructor(router: Router) {
+        this.router = router;
+        this.params = new RouterParams(router);
+    }
+
+    /**
      * Programmatically navigate to a new ViewModel by pushing an entry in the history stack.
      *
-     * @param vm - A routable ViewModel
+     * @param vm     - A routable ViewModel
+     * @param params - Required path parameters
      */
-    public async navigateTo(vm: RoutableViewModel): Promise<void> {
-        await this.router.push(vm.route.path);
+    public async navigateTo<Route extends RoutableViewModel>(vm: Route, ...params: RouteParamsParameter<Route>): Promise<void> {
+        if (params.length == 0) {
+            await this.router.push(vm.route.path);
+            return;
+        }
+
+        let result: string = vm.route.path;
+
+        for (const key in params[0]) {
+            result = result.replace(`:${key}`, encodeURIComponent(String((params[0] as any)[key])));
+        }
+
+        await this.router.push(result);
     }
 
     /**
@@ -93,6 +195,8 @@ export class RouterService {
     public navigateBack(): void {
         this.router.back();
     }
+
+
 }
 
 hookPlugin((app: App, config: AppShell, ctx: WritableGlobalContext) => {
@@ -110,7 +214,7 @@ hookPlugin((app: App, config: AppShell, ctx: WritableGlobalContext) => {
             break;
     }
 
-    const metaSymbol = Symbol("vue-mvvm-router-meta");
+    const metaSymbol: symbol = Symbol("vue-mvvm-router-meta");
     const router: Router = createRouter({
         history: history,
         routes: config.router.views.map(view => ({
@@ -142,6 +246,7 @@ hookPlugin((app: App, config: AppShell, ctx: WritableGlobalContext) => {
         }
     });
 
+    ctx.registerProvider(RouterView);
     ctx.registerService(RouterService, () => new RouterService(router));
     app.use(router);
 });

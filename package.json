@@ -24,6 +24,10 @@
         "./router": {
             "import": "./dist/vue-mvvm-router.mjs",
             "types": "./dist/vue-mvvm-router.d.mts"
+        },
+        "./dialog": {
+            "import": "./dist/vue-mvvm-dialog.mjs",
+            "types": "./dist/vue-mvvm-dialog.d.mts"
         }
     },
     "type": "module",
@@ -33,8 +37,8 @@
         "LICENSE"
     ],
     "scripts": {
-        "build:dev": "tsdown --entry.vue-mvvm ./src/core/index.ts --entry.vue-mvvm-router ./src/router/index.ts --sourcemap --format esm --dts --unbundle --watch",
-        "build:prod": "tsdown --entry.vue-mvvm ./src/core/index.ts --entry.vue-mvvm-router ./src/router/index.ts --format esm --dts --minify --unbundle"
+        "build:dev": "tsdown --sourcemap --watch",
+        "build:prod": "tsdown --minify"
     },
     "peerDependencies": {
         "vue": "^3.5.24",
