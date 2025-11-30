@@ -6,7 +6,7 @@ export type FactoryFunction<T> = (ctx: ReadableGlobalContext) => T;
 export type AsyncFactoryFunction<T> = (ctx: ReadableGlobalContext) => Promise<T>;
 
 /**
- * Provides a interface for accessing the global context
+ * Provides an interface for accessing the global context
  */
 export interface WritableGlobalContext extends ReadableGlobalContext {
     /**
@@ -24,8 +24,20 @@ export interface WritableGlobalContext extends ReadableGlobalContext {
      */
     registerService<T extends new (...args: any[]) => any>(key: T, factory: FactoryFunction<InstanceType<T>>): void;
 
+    /**
+     * Registers a service with a ServiceKey key and factory function.
+     *
+     * @param key     - The ServiceKey that serves as the unique identifier for the service.
+     * @param factory - A factory function that creates an instance of the service associated with the provided key.
+     */
     registerService<T>(key: ServiceKey<T>, factory: FactoryFunction<T>): void;
 
+    /**
+     * Registers a service with an AsyncServiceKey key and async factory function.
+     *
+     * @param key     - The AsyncServiceKey that serves as the unique identifier for the service.
+     * @param factory - An async factory function that creates an instance of the service associated with the provided key.
+     */
     registerService<T>(key: AsyncServiceKey<T>, factory: AsyncFactoryFunction<T>): void;
 
     /**
@@ -55,6 +67,21 @@ export interface ReadableGlobalContext {
      * @return An instance of the service represented by the provided class or constructor function.
      */
     getService<T extends new (...args: any[]) => any>(key: T): InstanceType<T>;
+
+    /**
+     * Retrieves a service instance based on the passed ServiceKey
+     *
+     * @param key - The ServiceKey connected with the service
+     */
+    getService<T>(key: ServiceKey<T>): T;
+
+    /**
+     * Retrieves a service instance based on the passed AsyncServiceKey.
+     * The services are resolved async.
+     *
+     * @param key - The AsyncServiceKey connected with the service
+     */
+    getService<T>(key: AsyncServiceKey<T>): Promise<T>;
 }
 
 const providers: Set<Component> = new Set<Component>();
@@ -132,13 +159,38 @@ function getService<T>(key: T | ServiceKey<T> | AsyncServiceKey<T>): unknown | P
     return instance;
 }
 
+/**
+ * Can be used to register a service that lives not in a class.
+ */
 export class ServiceKey<T> {
-    public constructor() {
+    private readonly name?: string;
+
+    public constructor(name?: string) {
+        this.name = name;
+    }
+
+    public [Symbol.toPrimitive]() {
+        return this.name
+            ? this.name
+            : this;
     }
 }
 
+/**
+ * Can be used to register a service that lives not in a class.
+ * Additionally, the factory function is defined as async.
+ */
 export class AsyncServiceKey<T> {
-    public constructor() {
+    private readonly name?: string;
+
+    public constructor(name?: string) {
+        this.name = name;
+    }
+
+    public [Symbol.toPrimitive]() {
+        return this.name
+            ? this.name
+            : this;
     }
 }
 
