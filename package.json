@@ -1,6 +1,6 @@
 {
     "name": "vue-mvvm",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "Lightweight MVVM utilities for Vue 3 with typed ViewModels, UserControls, simple DI and more",
     "keywords": [
         "vue",
