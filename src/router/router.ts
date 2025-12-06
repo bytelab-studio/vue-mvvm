@@ -90,7 +90,7 @@ export type RoutableViewModel = ViewModelConstructor & {
      */
     route: RouteAdapter;
 
-    component: Component;
+    component: Component
 }
 
 /**
