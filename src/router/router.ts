@@ -1,4 +1,4 @@
-import {App} from "vue";
+import {App, Component} from "vue";
 import {
     createMemoryHistory,
     createRouter,
@@ -89,6 +89,7 @@ export type RoutableViewModel = ViewModelConstructor & {
      * Static field in a ViewModel exposes routing information used by the RouterService.
      */
     route: RouteAdapter;
+    component: Component
 }
 
 /**
