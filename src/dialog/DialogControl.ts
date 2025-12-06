@@ -1,11 +1,14 @@
-import {readonly, ref, Ref, warn} from "vue";
+import {Component, readonly, ref, Ref, warn} from "vue";
 
-import {UserControl, type UserControlConstructor, syncio} from "vue-mvvm";
+import {syncio, UserControl, type UserControlConstructor} from "vue-mvvm";
 
 /**
  * A type definition for a valid DialogControl class constructor.
  */
-export type DialogControlConstructor<T extends DialogControl = DialogControl, Arguments extends [...unknown[]] = []> = UserControlConstructor<T, Arguments>;
+export type DialogControlConstructor<T extends DialogControl = DialogControl, Arguments extends [...unknown[]] = []> =
+    UserControlConstructor<T, Arguments> | {
+        readonly component: Component
+    };
 
 /**
  * Abstract base class for easily managing dialog controls in an application.

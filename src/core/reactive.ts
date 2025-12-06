@@ -28,7 +28,10 @@ export function ref<T>(initial: T): ReactiveField<T> {
 
 export function computed<T>(getter: vue.ComputedGetter<T>): ReactiveField<T>;
 export function computed<T>(options: { get: vue.ComputedGetter<T>, set: vue.ComputedSetter<T> }): ReactiveField<T>;
-export function computed<T>(arg: vue.ComputedGetter<T> | { get: vue.ComputedGetter<T>, set: vue.ComputedSetter<T> }): ReactiveField<T> {
+export function computed<T>(arg: vue.ComputedGetter<T> | {
+    get: vue.ComputedGetter<T>,
+    set: vue.ComputedSetter<T>
+}): ReactiveField<T> {
     if (typeof arg == "function") {
         return {
             __isReactiveField: true,
@@ -78,7 +81,10 @@ export function applyReactivity<T extends ViewModel>(vm: T): T {
                     return ref.value;
                 case "computed":
                     const hasSetter: boolean = !!value.setter;
-                    const computed: vue.ComputedRef = vue.computed(hasSetter ? { get: value.getter, set: value.setter! } : (value.getter as any));
+                    const computed: vue.ComputedRef = vue.computed(hasSetter ? {
+                        get: value.getter,
+                        set: value.setter!
+                    } : (value.getter as any));
                     reactiveMap.set(key, [value, computed]);
                     return computed.value;
             }
@@ -119,7 +125,10 @@ export function applyReactivity<T extends ViewModel>(vm: T): T {
                             const name: string = typeof key == "string" ? key : String(key);
                             throw new Error(`Cannot assign to computed property '${name}': no setter was defined`);
                         }
-                        const computed: vue.WritableComputedRef<any> = vue.computed({ get: current.getter, set: current.setter! });
+                        const computed: vue.WritableComputedRef<any> = vue.computed({
+                            get: current.getter,
+                            set: current.setter!
+                        });
                         reactiveMap.set(key, [current, computed]);
                         computed.value = value;
                         return true;

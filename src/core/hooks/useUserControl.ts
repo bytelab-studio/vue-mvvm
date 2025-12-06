@@ -1,6 +1,6 @@
-import { useViewModel } from "@hook/useViewModel";
-import { UserControl, UserControlConstructor } from "@/UserControl";
-import { TemplateRef, useTemplateRef } from "vue";
+import {useViewModel} from "@hook/useViewModel";
+import {UserControl, UserControlConstructor} from "@/UserControl";
+import {defineExpose} from "vue";
 
 export const exposeSymbol: symbol = Symbol("vue-mvvm-user-control");
 
