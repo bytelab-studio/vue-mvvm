@@ -1,5 +1,5 @@
-import {type Component, TemplateRef, useTemplateRef} from "vue";
 import * as vue from "vue";
+import {type Component, TemplateRef, useTemplateRef} from "vue";
 import * as syncio from "@/syncio";
 import * as reactive from "@/reactive";
 import {type ReadableGlobalContext, useGlobalContext} from "@/context";
@@ -10,11 +10,7 @@ import {UserControl} from "@/UserControl";
 /**
  * A type definition for a valid ViewModel class constructor.
  */
-export type ViewModelConstructor<Instance extends ViewModel = ViewModel, Arguments extends [...unknown[]] = []> =
-    (new (...args: Arguments) => Instance) &
-    {
-        readonly component: Component;
-    }
+export type ViewModelConstructor<Instance extends ViewModel = ViewModel, Arguments extends [...unknown[]] = []> = (new (...args: Arguments) => Instance);
 
 /**
  * The ViewModel is the lowest possible abstraction class in MVVM.

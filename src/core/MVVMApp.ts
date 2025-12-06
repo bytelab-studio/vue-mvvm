@@ -1,4 +1,4 @@
-import {defineComponent, h, Fragment} from "vue";
+import {defineComponent, Fragment, h} from "vue";
 
 import {type ReadableGlobalContext, useGlobalContext} from "@/context";
 
@@ -11,6 +11,6 @@ export const MVVMApp = defineComponent({
     setup() {
         const ctx: ReadableGlobalContext = useGlobalContext(true);
 
-        return () => h(Fragment, null, ctx.getProviders().map(providers  => h(providers)));
+        return () => h(Fragment, null, ctx.getProviders().map(providers => h(providers)));
     }
 });

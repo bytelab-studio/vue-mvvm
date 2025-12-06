@@ -1,4 +1,13 @@
-import {onBeforeMount, onBeforeUnmount, onBeforeUpdate, onMounted, onUnmounted, onUpdated, onActivated, onDeactivated} from "vue";
+import {
+    onActivated,
+    onBeforeMount,
+    onBeforeUnmount,
+    onBeforeUpdate,
+    onDeactivated,
+    onMounted,
+    onUnmounted,
+    onUpdated
+} from "vue";
 import {ViewModel, type ViewModelConstructor} from "@/ViewModel";
 
 /**

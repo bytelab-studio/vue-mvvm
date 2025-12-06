@@ -8,12 +8,7 @@ import {
     RouterHistory,
     RouterView
 } from "vue-router";
-import {
-    AppShell,
-    ViewModelConstructor,
-    WritableGlobalContext,
-    syncio
-} from "vue-mvvm";
+import {AppShell, syncio, ViewModelConstructor, WritableGlobalContext} from "vue-mvvm";
 
 import {hookPlugin} from "@/plugin";
 

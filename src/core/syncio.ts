@@ -19,7 +19,7 @@
  *
  * @return A promise with the awaited value if it was required
  */
-export async function ensureSync<T>(val: T|Promise<T>): Promise<Awaited<T>> {
+export async function ensureSync<T>(val: T | Promise<T>): Promise<Awaited<T>> {
     if (val instanceof Promise) {
         val = await val;
     }
