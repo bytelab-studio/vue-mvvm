@@ -28,6 +28,5 @@ export function useDialogControl<Instance extends DialogControl>(cls: DialogCont
         return control;
     }
 
-
     throw new DialogControlMismatchError(cls as unknown as Function);
 }

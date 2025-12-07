@@ -1,6 +1,9 @@
+import {ComponentInternalInstance, getCurrentInstance, ShallowRef, useTemplateRef} from "vue";
+
 import {useViewModel} from "@hook/useViewModel";
 import {UserControl, UserControlConstructor} from "@/UserControl";
-import {defineExpose} from "vue";
+import {HookUsageError} from "@/errors";
+import * as reactive from "@/reactive";
 
 export const exposeSymbol: symbol = Symbol("vue-mvvm-user-control");
 
@@ -14,9 +17,13 @@ export const exposeSymbol: symbol = Symbol("vue-mvvm-user-control");
 export function useUserControl<T extends UserControl>(cls: UserControlConstructor<T>): T {
     const vm: T = useViewModel(cls);
 
-    defineExpose({
-        [exposeSymbol]: vm
-    });
+    const instance: ComponentInternalInstance | null = getCurrentInstance();
+    if (!instance) {
+        throw new HookUsageError("useUserControl");
+    }
+    instance.exposed ??= {};
+    // @ts-expect-error
+    instance.exposed[exposeSymbol] = vm;
 
     return vm;
 }
