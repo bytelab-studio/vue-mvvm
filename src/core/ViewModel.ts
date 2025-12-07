@@ -98,61 +98,44 @@ export class ViewModel {
     }
 
     /**
-     * Collect a UserControl that is bound to the View using a Vue.js template ref
-     *
-     * @param ref - The Vue.js Template ref
-     *
-     * @returns The UserControl of the bounded UI Element
-     */
-    protected getUserControl<T extends UserControl>(ref: string): T;
-
-    /**
-     * Collects multiple UserControls that are bound to the View using a Vue.js template ref
+     * Collect UserControl that are bound to the View using a Vue.js template ref
      *
      * @param ref  - The Vue.js Template ref
-     * @param many - Expected an array of elements on collection
      *
-     * @returns A array with the UserControl of the bounded UI Element
+     * @returns UserControl of the bounded UI Element
      */
-    protected getUserControl<T extends UserControl>(ref: string, many: true): T[];
+    protected getUserControl<T extends UserControl | UserControl[]>(ref: string): T | null {
+        const reference: Readonly<vue.ShallowRef> = useTemplateRef(ref);
 
-    protected getUserControl<T extends UserControl>(ref: string, many?: true): T | T[] {
-        const reference: TemplateRef<any | any[]> = useTemplateRef(ref);
-        if (!reference.value) {
-            throw new Error(`UserControl '${ref}' could not be found`);
-        }
-
-        const value: any | any[] = reference.value;
-        if (Array.isArray(value)) {
-            if (!many) {
-                throw new Error(`Found multiple UserControl's for '${ref}'`);
+        return reactive.computed(() => {
+            if (!reference.value) {
+                return null;
             }
 
-            const result: T[] = [];
+            const value: any | any[] = reference.value;
+            if (Array.isArray(value)) {
+                const result: T[] = [];
 
-            for (let i: number = 0; i < value.length; i++) {
-                const item: any = value[i];
+                for (let i: number = 0; i < value.length; i++) {
+                    const item: any = value[i];
 
-                if (userControlSymbol in item && item[userControlSymbol] instanceof UserControl) {
-                    result.push(item[userControlSymbol] as T);
-                    continue;
+                    if (userControlSymbol in item && item[userControlSymbol] instanceof  UserControl) {
+                        result.push(item[userControlSymbol] as T);
+                        continue;
+                    }
+
+                    throw new Error(`UserControl '${ref}', at index ${i} is missing metadata`);
                 }
 
-                throw new Error(`UserControl '${ref}', at index ${i} is missing metadata`);
+                return result;
             }
 
-            return result;
-        }
+            if (userControlSymbol in value && value[userControlSymbol] instanceof UserControl) {
+                return value[userControlSymbol] as T;
+            }
 
-        if (many) {
-            throw new Error(`Found only one UserControl's for '${ref}' (many = true)`);
-        }
-
-        if (userControlSymbol in value && value[userControlSymbol] instanceof UserControl) {
-            return value as T;
-        }
-
-        throw new Error(`UserControl '${ref}' is missing metadata`);
+            throw new Error(`UserControl '${ref}' is missing metadata`);
+        }) as T | null;
     }
 
     protected ref<T>(initial: T): T {

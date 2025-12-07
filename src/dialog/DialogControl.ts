@@ -6,7 +6,7 @@ import {syncio, UserControl, type UserControlConstructor} from "vue-mvvm";
  * A type definition for a valid DialogControl class constructor.
  */
 export type DialogControlConstructor<T extends DialogControl = DialogControl, Arguments extends [...unknown[]] = []> =
-    UserControlConstructor<T, Arguments> | {
+    UserControlConstructor<T, Arguments> & {
         readonly component: Component
     };
 
