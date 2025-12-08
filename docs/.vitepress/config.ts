@@ -24,6 +24,14 @@ export default withMermaid({
                 items: [
                     { text: "ViewModel", link: "/api/view-model" },
                     { text: "UserControl", link: "/api/user-control" },
+                    { text: "Action", link: "/api/action" },
+                    { text: "Dependency Injection", link: "/api/dependency-injection" },
+                ]
+            },
+            {
+                text: "Extensions",
+                items: [
+                    { text: "Router", link: "/extensions/router"}
                 ]
             },
             {

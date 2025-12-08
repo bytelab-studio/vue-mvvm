@@ -3,6 +3,8 @@
 - [ViewModel](#viewmodel)
   - [Lifecycle Hooks](#lifecycle-hooks)
     - [Asynchronous Lifecycle Methods](#asynchronous-lifecycle-methods)
+  - [Reactivity](#reactivity)
+    - [Vue's reactivity vs. ViewModel wrappers](#vues-reactivity-vs-viewmodel-wrappers)
   - [Accessing GlobalContext](#accessing-globalcontext)
 
 ViewModels are the core abstraction in the `vue-mvvm` framework, serving as the intermediary
@@ -10,52 +12,7 @@ layer between Vue components (Views) and business logic (Services).
 
 A ViewModel encapsulates presentation logic, manages UI state, coordinates with services
 through dependency injection, declares lifecycle hooks that mirror Vue's component
-lifecycle, and provides wrapper methods for VUe's reactivity functions.
-
-```mermaid
-classDiagram
-    direction TB
-
-    class ViewModel {
-        # ctx: ReadableGlobalContext
-        + constructor()
-        + beforeMount() void|Promise~void~
-        + mounted() void|Promise~void~
-        + beforeUpdate() void|Promise~void~
-        + updated() void|Promise~void~
-        + beforeUnmount() void|Promise~void~
-        + unmounted() void|Promise~void~
-        + activated() void|Promise~void~
-        + deactivated() void|Promise~void~
-        # runAction(action: Action~T~) Promise~ActionResult~T~~
-        # getUserControl(ref: string) T
-        # getUserControl(ref: string, many: true) T[]
-        # ref(initial: T) T
-        # computed(getter: () => T) T
-        # computed(options: ComputedGetterWithSetter) T
-    }
-
-    class ReadableGlobalContext {
-        + getService(serviceClass) T
-        + getService(serviceKey: ServiceKey) T
-        + getService(serviceKey: AsyncServiceKey) Promise<T>
-        + getProviders() Vue.Component
-    }
-
-    class Action {
-        <<interface>>
-        + onAction(ctx: ActionContext~T~)
-    }
-
-    class UserControl {
-
-    }
-
-    %% Relationships
-    ViewModel --> ReadableGlobalContext : accesses services
-    ViewModel --> Action : executes
-    ViewModel --> UserControl : retrieves from refs
-```
+lifecycle, and provides wrapper methods for Vue's reactivity functions.
 
 ## Lifecycle Hooks
 
@@ -79,6 +36,94 @@ All lifecycle methods can return either `void` or `Promise<void>`. While asynchr
 lifecycle methods are supported, Vue does not await for them to complete before proceeding
 with the component lifecycle. If you need to ensure asynchronous operations complete
 before certain UI interactions are enabled, consider using a loading state variable.
+
+## Reactivity
+
+The ViewModel class provides two protected methods for creating reactive properties.
+
+These methods enables to declare reactive properties as class fields, which are then
+automatically transformed into Vue reactivity references through a proxy reactivity system.
+
+### Vue's reactivity vs. ViewModel wrappers
+
+Regardles of when using Vue's reactivity or the ViewModel wrappers, the result will be the same.
+The only goal of the ViewModel wrappers is to achive a better DX of writting and reading properties.
+
+With the Vue's reactivity a counter would look like this:
+
+```typescript
+export class CounterViewModel extends ViewModel {
+    public count: Ref<number> = ref(0);
+
+    public increment(): void {
+        this.count.value++;
+    }
+}
+```
+
+```vue
+<template>
+    <h1>Count {{ vm.count.value }}</h1>
+    <button @click="vm.increment">Increment</button>
+</template>
+
+<script setup lang="ts">
+const vm = useViewModel(CounterViewModel);
+</script>
+```
+
+We can modify this sample to use the ViewModel wrappers
+
+```typescript
+export class CounterViewModel extends ViewModel {
+    public count: Ref<number> = ref(0); // [!code --]
+    public count: number = this.ref(0); // [!code ++]
+
+    public increment(): void {
+        this.count.value++; // [!code --]
+        this.count++ // [!code ++]
+    }
+}
+```
+
+```vue
+<template>
+    <h1>Count {{ vm.count.value }}</h1> <!-- [!code --] -->
+    <h1>Count {{ vm.count }}</h1> <!-- [!code ++] -->
+    <button @click="vm.increment">Increment</button>
+</template>
+
+<script setup lang="ts">
+const vm = useViewModel(CounterViewModel);
+</script>
+```
+
+When creating reactive properties through the wrapper method, we don't need to call `.value` anymore.
+
+The same can be achived for computed properties:
+
+```typescript
+export class CounterViewModel extends ViewModel {
+    public count: number = this.ref(0);
+    public doubleCount: number = this.computed(() => this.count * 2); // [!code ++]
+
+    public increment(): void {
+        this.count++;
+    }
+}
+```
+
+```vue
+<template>
+    <h1>Count {{ vm.count }}</h1>
+    <h2>DoubleCount {{ vm.doubleCount }}</h2> <!-- [!code ++] -->
+    <button @click="vm.increment">Increment</button>
+</template>
+
+<script setup lang="ts">
+const vm = useViewModel(CounterViewModel);
+</script>
+```
 
 ## Accessing GlobalContext
 
