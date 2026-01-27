@@ -11,11 +11,15 @@ export * from "@/ConfirmControl";
 export * from "@/AlertService";
 
 declare module "vue-mvvm" {
-    interface AppShell {
-        alert: {
+    export namespace AppShell {
+        export interface AlertConfig {
             alert?: AlertControlConstructor;
             confirm?: ConfirmControlConstructor;
         }
+    }
+
+    export interface AppShell {
+        alert: AppShell.AlertConfig;
     }
 }
 

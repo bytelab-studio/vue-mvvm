@@ -13,11 +13,8 @@ import {RouterProvider} from "@/RouterProvider";
 import {hookPlugin} from "@/plugin";
 
 declare module "vue-mvvm" {
-    interface AppShell {
-        /**
-         * Configuration for the vue-router
-         */
-        router: {
+    export namespace AppShell {
+        export interface RouterConfig {
             /**
              * The strategy to build a router history. Default is `"web"`
              *
@@ -33,6 +30,13 @@ declare module "vue-mvvm" {
              */
             views: RoutableViewModel[];
         }
+    }
+
+    export interface AppShell {
+        /**
+         * Configuration for the vue-router
+         */
+        router: AppShell.RouterConfig;
     }
 }
 

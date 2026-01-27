@@ -28,6 +28,10 @@
         "./dialog": {
             "import": "./dist/vue-mvvm-dialog.mjs",
             "types": "./dist/vue-mvvm-dialog.d.mts"
+        },
+        "./alert": {
+            "import": "./dist/vue-mvvm-alert.mjs",
+            "types": "./dist/vue-mvvm-alert.d.mts"
         }
     },
     "type": "module",
