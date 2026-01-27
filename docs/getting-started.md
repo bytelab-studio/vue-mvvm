@@ -12,40 +12,40 @@
 
 ## Prerequisites
 
-The framework requires following peer dependencies:
+The framework requires the following peer dependencies:
 
 | Dependency   | Version | Purpose                                  |
 | ------------ | ------- | ---------------------------------------- |
 | `vue`        | ^3.5.24 | Vue 3 framework runtime                  |
 | `vue-router` | ^4.6.3  | Required only if using `vue-mvvm/router` |
 
-**Note:** The router dependency is optional and only needed if you plan to use the router integration feature described in [Router Integration](#)
+**Note:** The router dependency is optional and only needed if you plan to use the router extension described in [Router Extension](/extensions/router).
 
 ## Initialization Steps
 
 ### 1. Create a Vue Application
 
-Create a new vue application and select all features you want.
+Create a new Vue application and select any features you want.
 
 ```shell
 npm create vue@latest
 ```
 
 ::: info
-It is recommended to enable TypeScript support
+It is recommended to enable TypeScript support.
 :::
 
-### 2. Install Package
+### 2. Install the Package
 
-Use npm (or any other package manager) to install `vue-mvvm`
+Use npm (or any other package manager) to install `vue-mvvm`.
 
 ```shell
 npm install vue-mvvm
 ```
 
-### 3. Create AppShell
+### 3. Create the AppShell
 
-Implement the `AppShell` interface to configure services and plugins
+Implement the `AppShell` interface to configure services and plugins.
 
 ```typescript
 // config.ts
@@ -57,7 +57,7 @@ export class AppConfig implements AppShell {
     }
 }
 
-// or alternativly
+// or alternatively
 export const AppConfig = {
     configureService(ctx: WritableGlobalContext): void {
         // Register and mock services
@@ -92,8 +92,8 @@ project/
 │   ├── config.ts               # AppShell configuration
 │   ├── App.vue                 # Entry component
 │   ├── controls/
-│   │   ├── FormControl.vue     # UserControl 
-│   │   └── FormContro.model.ts # ViewModel of the UserControl
+│   │   ├── FormControl.vue     # UserControl
+│   │   └── FormControl.model.ts # ViewModel of the UserControl
 │   └── views/
 │       ├── MainView.vue        # View 
 │       └── MainView.model.ts   # ViewModel
@@ -102,8 +102,8 @@ project/
 
 ## MVVMApp Component
 
-If you use `vue-router` and don't desire a special layout of the `App` component.
-Then you can use the built-in `MVVMApp` component, as the root component.
+If you use `vue-router` and don't need a special layout for the `App` component,
+you can use the built-in `MVVMApp` component as the root component.
 
 ```typescript
 // main.ts
@@ -123,5 +123,5 @@ app.use(createMVVM(AppConfig));
 app.mount("#app");
 ```
 
-The `MVVMApp` will also mount any registered providers from the plugins.
-For example `DialogProvider` will be mounted when `vue-mvvm/dialog` somewhere used.
+The `MVVMApp` will also mount any registered providers from plugins.
+For example, `DialogProvider` will be mounted when `vue-mvvm/dialog` is used.

@@ -8,17 +8,15 @@
   - [Core Components](#core-components)
     - [Base Classes](#base-classes)
     - [Composition Hooks](#composition-hooks)
-    - [Infrastructur](#infrastructur)
+    - [Infrastructure](#infrastructure)
   - [Data Flow](#data-flow)
   - [Design Philosophy](#design-philosophy)
 
 ## Purpose and Scope
 
-`vue-mvvm` is a is a lightweight MVVM (Model-View-ViewModel) framework for Vue 3 applications. It provides typed ViewModels, reusable UserControls, a minimal dependency injection container.
+`vue-mvvm` is a lightweight MVVM (Model-View-ViewModel) framework for Vue 3 applications. It provides typed ViewModels, reusable UserControls, and a minimal dependency injection container.
 
-Additonally...
-
-**Current Status:** `vue-mvvm` is in early-stage development (version 0.3.0). Not all features may run stable in production environments and can change rapidly in they implementations.
+**Current Status:** `vue-mvvm` is in early-stage development (version 0.3.0). Not all features may be stable in production environments and implementations can change rapidly.
 
 ## Package Structure
 
@@ -30,12 +28,12 @@ Additonally...
 | Router | `vue-mvvm/router` | Plugin to enable ViewModel routing using `vue-router` package |
 | Dialog | `vue-mvvm/dialog` | Plugin for easy dialog management from ViewModel code         |
 
-Any Module below core is optional and gets tree-shaked when unused.
+Any module beyond Core is optional and will be tree-shaken when unused.
 
 ### Distribution Format
 
 - **Module Format:** ESM with `.mjs` extension
-- **Type Declarations:** TypeScript declarations files (`*.d.ts`)
+- **Type Declarations:** TypeScript declaration files (`*.d.ts`)
 - **Build Tool:** `tsdown` with `rolldown` bundler
 - **Tree-Shaking:** Unbundled output for optimal tree-shaking
 
@@ -107,7 +105,7 @@ flowchart LR
 | `useViewModel`   | Instantiates ViewModels and bind their lifecycle to Vue components      |
 | `useUserControl` | Instantiates UserControls and exposes them via symbol for parent access |
 
-### Infrastructur
+### Infrastructure
 
 | Component       | Purpose                                                                              |
 | --------------- | ------------------------------------------------------------------------------------ |
@@ -118,17 +116,17 @@ flowchart LR
 
 ## Data Flow
 
-1. **View Layer:** Pure presentation - templates bind to ViewModel properties and call methods
+1. **View Layer:** Pure presentation — templates bind to ViewModel properties and call methods
 2. **Integration Layer:** Composition hooks bridge Vue's reactivity system with ViewModel instances
-3. **Presentation Layer:** ViewModels manage UI state and orchestrate buisness operations
-4. **Buisness Layer:** Services contain reusable buisness logic accessed via dependency injection
+3. **Presentation Layer:** ViewModels manage UI state and orchestrate business operations
+4. **Business Layer:** Services contain reusable business logic accessed via dependency injection
 5. **Infrastructure Layer:** Framework utilities for DI and async operations
 
-This seperation enables:
+This separation enables:
 
 - **Testability:** ViewModels can be unit tested without rendering components
 - **Reusability:** UserControls and Services can be shared across multiple views
-- **Maintainability:** Clear boundaries between UI, presentation and buisness logic
+- **Maintainability:** Clear boundaries between UI, presentation, and business logic
 - **Type Safety:** Full TypeScript support throughout all layers
 
 ## Design Philosophy
@@ -137,4 +135,4 @@ This seperation enables:
 - **Incremental Adoption:** Use as much as or little as needed
 - **Type Safety:** Leverages TypeScript for compile-time guarantees
 - **Vue-Native:** Built on Vue 3 Composition API
-- **Testable:** Clear seperation enables isolated unit testing
+- **Testable:** Clear separation enables isolated unit testing

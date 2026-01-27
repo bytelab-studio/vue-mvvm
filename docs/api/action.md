@@ -13,15 +13,15 @@
 The Action pattern enables ViewModels to delegate interactive
 tasks to child components and await their results.
 
-This decouples ViewModels from the UI implementation details of the user interactions.
+This decouples ViewModels from the UI implementation details of user interactions.
 
 | Use Case             | Description                                             |
 | -------------------- | ------------------------------------------------------- |
 | Form Submission      | Collect and validate user input                         |
 | Modal Dialogs        | Present choices and await user decisions                |
-| Confirmation Prompts | Request user confirmation before actions (e.g deletion) |
+| Confirmation Prompts | Request user confirmation before actions (e.g., deletion) |
 
-The `Action<T>` interface defines the contract for components that executes 
+The `Action<T>` interface defines the contract for components that execute 
 user-initiated operations:
 
 ```typescript
@@ -30,8 +30,8 @@ interface Action<T> {
 }
 ```
 
-Implementations typically stores the ActionContext references to resolve it later when
-the user interaction completes (via form submission, dialog button click, etc.)
+Implementations typically store the `ActionContext` reference to resolve it later when
+the user interaction completes (via form submission, dialog button click, etc.).
 
 The `ActionContext<T>` class allows Action implementations to resolve with success or failure.
 It enforces single-resolution semantics to prevent race conditions.
@@ -40,7 +40,7 @@ The `ActionResult<T>` discriminated union type represents the outcome of an acti
 
 ## Implementing Actions
 
-### Step 1: Implement Action interface
+### Step 1: Implement the Action interface
 
 ```typescript
 interface LoginData {
@@ -55,7 +55,7 @@ export class MyFormControlModel extends UserControl implements Action<LoginData>
     public onAction(ctx: ActionContext<LoginData>): void {
         this.actionContext = ctx;
     
-        // optional reset form state, focus first input etc.
+        // optionally reset form state, focus first input, etc.
     }
 
 
@@ -84,14 +84,14 @@ export class MyFormControlModel extends UserControl implements Action<LoginData>
     public onAction(ctx: ActionContext<LoginData>): void {
         this.actionContext = ctx;
     
-        // optional reset form state, focus first input etc.
+        // optionally reset form state, focus first input, etc.
     }
 
     public onSubmit() {                                             // [!code ++]
         if (!this.actionContext) {                                  // [!code ++]
             return;                                                 // [!code ++]
         }                                                           // [!code ++]
-        // optional validate data                                   // [!code ++]
+        // optionally validate data                                  // [!code ++]
         this.actionContext.completeAction({                         // [!code ++]
             username: this.username,                                // [!code ++]
             password: this.password,                                // [!code ++]
