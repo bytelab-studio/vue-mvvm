@@ -1,4 +1,5 @@
 import {ComponentInternalInstance, getCurrentInstance} from "vue";
+
 import {DialogControl, DialogControlConstructor} from "@/DialogControl";
 import {useViewModelInstance} from "@hook/useViewModel";
 import {DialogControlMismatchError, HookUsageError, MissingComponentMetadataError} from "@/errors";

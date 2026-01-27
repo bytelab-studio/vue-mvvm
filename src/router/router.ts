@@ -5,11 +5,11 @@ import {
     createWebHashHistory,
     createWebHistory,
     Router,
-    RouterHistory,
-    RouterView
+    RouterHistory
 } from "vue-router";
 import {AppShell, syncio, ViewModelConstructor, WritableGlobalContext} from "vue-mvvm";
 
+import {RouterProvider} from "@/RouterProvider";
 import {hookPlugin} from "@/plugin";
 
 declare module "vue-mvvm" {
@@ -269,7 +269,7 @@ hookPlugin((app: App, config: AppShell, ctx: WritableGlobalContext) => {
         }
     });
 
-    ctx.registerProvider(RouterView);
+    ctx.registerProvider(RouterProvider);
     ctx.registerService(RouterService, () => new RouterService(router));
     app.use(router);
 });
