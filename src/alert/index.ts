@@ -13,12 +13,21 @@ export {AlertService} from "@/AlertService";
 declare module "vue-mvvm" {
     export namespace AppShell {
         export interface AlertConfig {
+            /**
+             * Component used for universal alerts
+             */
             alert?: AlertControlConstructor;
+            /**
+             * Component used for universal confirms
+             */
             confirm?: ConfirmControlConstructor;
         }
     }
 
     export interface AppShell {
+        /**
+         * Configuration for `vue-mvvm/alert`
+         */
         alert: AppShell.AlertConfig;
     }
 }
