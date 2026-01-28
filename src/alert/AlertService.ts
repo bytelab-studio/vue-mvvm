@@ -5,16 +5,25 @@ import {ConfirmControl, ConfirmControlConstructor, ConfirmComponentNotFoundError
 
 let alertControl: AlertControlConstructor | null;
 
+/**
+ * @internal
+ */
 export function setAlertControl(control: AlertControlConstructor | null): void {
     alertControl = control;
 }
 
 let confirmControl: ConfirmControlConstructor | null;
 
+/**
+ * @internal
+ */
 export function setConfirmControl(control: ConfirmControlConstructor | null): void {
     confirmControl = control;
 }
 
+/**
+ * A wrapper of the DialogService to simply display common dialogs
+ */
 export class AlertService {
     private dialogService: DialogService;
 
@@ -22,6 +31,11 @@ export class AlertService {
         this.dialogService = ctx.getService(DialogService);
     }
 
+    /**
+     * Show an alert dialog using the defined dialog component in the AppShell
+     * 
+     * @param options - Required data for the dialog
+     */
     public async showAlert(options: AlertOptions): Promise<void> {
         if (!alertControl) {
             throw new AlertComponentNotFoundError();
@@ -35,11 +49,18 @@ export class AlertService {
             await syncio.ensureSync(dialog.onAction(ctx));
         });
 
+        // Automatically destroy the dialog if the user's 
+        // implementation didn't destroy it by himself
         if (!dialog.destroyed.value) {
             dialog.destroy();
         }
     }
 
+    /**
+     * Show an confirm dialog using the defined dialog component in the AppShell
+     * 
+     * @param options - Required data for the dialog
+     */
     public async showConfirm(options: ConfirmOptions): Promise<boolean> {
         if (!confirmControl) {
             throw new ConfirmComponentNotFoundError();
@@ -53,6 +74,8 @@ export class AlertService {
             await syncio.ensureSync(dialog.onAction(ctx));
         });
 
+        // Automatically destroy the dialog if the user's 
+        // implementation didn't destroy it by himself
         if (!dialog.destroyed.value) {
             dialog.destroy();
         }
