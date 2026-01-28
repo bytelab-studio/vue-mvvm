@@ -8,7 +8,7 @@ import {AlertService, setAlertControl, setConfirmControl} from "@/AlertService";
 
 export * from "@/AlertControl";
 export * from "@/ConfirmControl";
-export * from "@/AlertService";
+export {AlertService} from "@/AlertService";
 
 declare module "vue-mvvm" {
     export namespace AppShell {
