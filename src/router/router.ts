@@ -5,19 +5,16 @@ import {
     createWebHashHistory,
     createWebHistory,
     Router,
-    RouterHistory,
-    RouterView
+    RouterHistory
 } from "vue-router";
 import {AppShell, syncio, ViewModelConstructor, WritableGlobalContext} from "vue-mvvm";
 
+import {RouterProvider} from "@/RouterProvider";
 import {hookPlugin} from "@/plugin";
 
 declare module "vue-mvvm" {
-    interface AppShell {
-        /**
-         * Configuration for the vue-router
-         */
-        router: {
+    export namespace AppShell {
+        export interface RouterConfig {
             /**
              * The strategy to build a router history. Default is `"web"`
              *
@@ -33,6 +30,13 @@ declare module "vue-mvvm" {
              */
             views: RoutableViewModel[];
         }
+    }
+
+    export interface AppShell {
+        /**
+         * Configuration for the vue-router
+         */
+        router: AppShell.RouterConfig;
     }
 }
 
@@ -153,7 +157,7 @@ export class RouterParams {
  * Represents an MVVM service wrapper around the `vue-router` functions.
  */
 export class RouterService {
-    private router: Router;
+    private readonly router: Router;
 
     public readonly params: RouterParams;
 
@@ -177,13 +181,24 @@ export class RouterService {
             return;
         }
 
-        let result: string = vm.route.path;
+        const route: string = this.resolvePath(vm.route.path, params);
+        await this.router.push(route);
+    }
 
-        for (const key in params[0]) {
-            result = result.replace(`:${key}`, encodeURIComponent(String((params[0] as any)[key])));
+    /**
+     * Programmatically navigate to a new ViewModel by replacing the current entry in the history stack.
+     *
+     * @param vm     - A routable ViewModel
+     * @param params - Required path parameters
+     */
+    public async replaceTo<Route extends RoutableViewModel>(vm: Route, ...params: RouteParamsParameter<Route>): Promise<void> {
+        if (params.length == 0) {
+            await this.router.replace(vm.route.path);
+            return;
         }
 
-        await this.router.push(result);
+        const route: string = this.resolvePath(vm.route.path, params);
+        await this.router.replace(route);
     }
 
     /**
@@ -193,7 +208,22 @@ export class RouterService {
         this.router.back();
     }
 
+    /**
+     * Returns the native Vue Router instance
+     */
+    public getNative(): Router {
+        return this.router;
+    }
 
+    private resolvePath(route: string, params: any[]): string {
+        let result: string = route;
+
+        for (const key in params[0]) {
+            result = result.replace(`:${key}`, encodeURIComponent(String((params[0] as any)[key])));
+        }
+
+        return result;
+    }
 }
 
 hookPlugin((app: App, config: AppShell, ctx: WritableGlobalContext) => {
@@ -243,7 +273,7 @@ hookPlugin((app: App, config: AppShell, ctx: WritableGlobalContext) => {
         }
     });
 
-    ctx.registerProvider(RouterView);
+    ctx.registerProvider(RouterProvider);
     ctx.registerService(RouterService, () => new RouterService(router));
     app.use(router);
 });
