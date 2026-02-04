@@ -3,7 +3,7 @@
  *
  * @example
  * // User defined function that might return a promise or directly a value
- * function foo(sendPromise: boolean): Promise<number>|number {
+ * function foo(sendPromise: boolean): Promise<number>|number> {
  *     if (sendPromise) {
  *         return Promise.resolve(123);
  *     }

@@ -9,6 +9,7 @@ import {
     onUpdated
 } from "vue";
 import {ViewModel, type ViewModelConstructor} from "@/ViewModel";
+import * as syncio from "@/syncio";
 
 /**
  * Binds a ViewModel to the current View
@@ -36,7 +37,10 @@ export function useViewModelInstance(vm: ViewModel): void {
     onUpdated(() => vm.updated());
 
     onBeforeUnmount(() => vm.beforeUnmount());
-    onUnmounted(() => vm.unmounted());
+    onUnmounted(async () => {
+        await syncio.ensureSync(vm.unmounted());
+        vm.disposeWatchers();
+    });
 
     onActivated(() => vm.activated());
     onDeactivated(() => vm.deactivated());
