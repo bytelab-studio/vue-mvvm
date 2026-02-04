@@ -55,49 +55,49 @@ export class ViewModel {
     /**
      * Hook for Vue's `onBeforeMount`
      */
-    public beforeMount(): void | Promise<void> {
+    protected beforeMount(): void | Promise<void> {
     }
 
     /**
      * Hook for Vue's `onMounted`
      */
-    public mounted(): void | Promise<void> {
+    protected mounted(): void | Promise<void> {
     }
 
     /**
      * Hook for Vue's `onBeforeUpdate`
      */
-    public beforeUpdate(): void | Promise<void> {
+    protected beforeUpdate(): void | Promise<void> {
     }
 
     /**
      * Hook for Vue's `onUpdated`
      */
-    public updated(): void | Promise<void> {
+    protected updated(): void | Promise<void> {
     }
 
     /**
      * Hook for Vue's `onBeforeUnmount`
      */
-    public beforeUnmount(): void | Promise<void> {
+    protected beforeUnmount(): void | Promise<void> {
     }
 
     /**
      * Hook for Vue's `onUnmounted`
      */
-    public unmounted(): void | Promise<void> {
+    protected unmounted(): void | Promise<void> {
     }
 
     /**
      * Hook for Vue's `onActivated`
      */
-    public activated(): void | Promise<void> {
+    protected activated(): void | Promise<void> {
     }
 
     /**
      * Hook for Vue's `onDeactivated`
      */
-    public deactivated(): void | Promise<void> {
+    protected deactivated(): void | Promise<void> {
     }
 
     /**
