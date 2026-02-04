@@ -5,6 +5,7 @@ import {
     createWebHashHistory,
     createWebHistory,
     Router,
+    RouteRecordRaw,
     RouterHistory
 } from "vue-router";
 import {AppShell, syncio, ViewModelConstructor, WritableGlobalContext} from "vue-mvvm";
@@ -14,6 +15,8 @@ import {hookPlugin} from "@/plugin";
 
 declare module "vue-mvvm" {
     export namespace AppShell {
+        export type LazyRoutableViewModel<T extends RoutableViewModel = RoutableViewModel> = [T["route"]["path"], () => Promise<RoutableViewModel>]
+
         export interface RouterConfig {
             /**
              * The strategy to build a router history. Default is `"web"`
@@ -28,7 +31,7 @@ declare module "vue-mvvm" {
             /**
              * All routable ViewModel's that should be registered to the `vue-router`
              */
-            views: RoutableViewModel[];
+            views: Array<RoutableViewModel | LazyRoutableViewModel>;
         }
     }
 
@@ -242,15 +245,30 @@ hookPlugin((app: App, config: AppShell, ctx: WritableGlobalContext) => {
     }
 
     const metaSymbol: symbol = Symbol("vue-mvvm-router-meta");
+
     const router: Router = createRouter({
         history: history,
-        routes: config.router.views.map(view => ({
-            path: view.route.path,
-            component: view.component,
-            meta: {
-                [metaSymbol]: view
+        routes: config.router.views.map(view => {
+            if (Array.isArray(view)) {
+                const [path, loader] = view;
+
+                return {
+                    path,
+                    component: async () => (await loader()).component,
+                    meta: {
+                        [metaSymbol]: view
+                    }
+                } satisfies RouteRecordRaw;
             }
-        }))
+
+            return {
+                path: view.route.path,
+                component: view.component,
+                meta: {
+                    [metaSymbol]: view
+                }
+            } satisfies RouteRecordRaw;
+        })
     });
 
     router.beforeEach(async (to) => {
