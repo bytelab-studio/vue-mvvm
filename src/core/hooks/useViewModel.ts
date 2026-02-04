@@ -11,6 +11,23 @@ import {
 import {ViewModel, type ViewModelConstructor} from "@/ViewModel";
 
 /**
+ * Used for override protected lifecycle methods in the ViewModel
+ */
+interface LifecycleHooks {
+    beforeMount(): void | Promise<void>;
+    mounted(): void | Promise<void>;
+
+    beforeUpdate(): void | Promise<void>;
+    updated(): void | Promise<void>;
+
+    beforeUnmount(): void | Promise<void>;
+    unmounted(): void | Promise<void>;
+
+    activated(): void | Promise<void>;
+    deactivated(): void | Promise<void>;
+}
+
+/**
  * Binds a ViewModel to the current View
  *
  * @param cls - The ViewModel that should be instantiated
@@ -20,7 +37,7 @@ import {ViewModel, type ViewModelConstructor} from "@/ViewModel";
 export function useViewModel<T extends ViewModel>(cls: ViewModelConstructor<T>): T {
     const vm: T = new cls();
 
-    useViewModelInstance(vm);
+    useViewModelInstance(vm as unknown as LifecycleHooks);
 
     return vm;
 }
@@ -28,7 +45,7 @@ export function useViewModel<T extends ViewModel>(cls: ViewModelConstructor<T>):
 /**
  * @internal
  */
-export function useViewModelInstance(vm: ViewModel): void {
+export function useViewModelInstance(vm: LifecycleHooks): void {
     onBeforeMount(() => vm.beforeMount());
     onMounted(() => vm.mounted());
 
