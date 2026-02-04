@@ -27,9 +27,6 @@ export class EditDialogControl extends DialogControl implements Action<Todo>{
         this.done = this.ref(todo.done);
     }
 
-    public mounted(): void | Promise<void> {
-    }
-
     protected onOpen(): void | Promise<void> {
     }
 

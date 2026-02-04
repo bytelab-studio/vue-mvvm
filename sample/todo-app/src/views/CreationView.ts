@@ -25,7 +25,7 @@ export class CreationViewModel extends ViewModel {
         this.router = this.ctx.getService(RouterService);
     }
 
-    mounted(): void | Promise<void> {
+    protected mounted(): void | Promise<void> {
         this.title = "";
         this.description = "";
     }
