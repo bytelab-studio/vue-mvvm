@@ -187,6 +187,7 @@ export class ViewModel {
 
                 revoked = true;
                 this.watchHandles = this.watchHandles.filter(x => x != handle);
+                handle.stop();
             },
             pause: handle.pause,
             resume: handle.resume
