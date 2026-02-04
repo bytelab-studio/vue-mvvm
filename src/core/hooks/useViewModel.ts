@@ -38,7 +38,7 @@ interface LifecycleHooks {
 export function useViewModel<T extends ViewModel>(cls: ViewModelConstructor<T>): T {
     const vm: T = new cls();
 
-    useViewModelInstance(vm as unknown as LifecycleHooks);
+    useViewModelInstance(vm as unknown as LifecycleHooks & ViewModel);
 
     return vm;
 }
@@ -46,7 +46,7 @@ export function useViewModel<T extends ViewModel>(cls: ViewModelConstructor<T>):
 /**
  * @internal
  */
-export function useViewModelInstance(vm: LifecycleHooks): void {
+export function useViewModelInstance(vm: LifecycleHooks & ViewModel): void {
     onBeforeMount(() => vm.beforeMount());
     onMounted(() => vm.mounted());
 
