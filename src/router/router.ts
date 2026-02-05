@@ -272,15 +272,24 @@ hookPlugin((app: App, config: AppShell, ctx: WritableGlobalContext) => {
     });
 
     router.beforeEach(async (to) => {
-        const metadata: RoutableViewModel | undefined = to.meta[metaSymbol] as RoutableViewModel | undefined;
+        const metadata: RoutableViewModel | AppShell.LazyRoutableViewModel | undefined = to.meta[metaSymbol] as RoutableViewModel | AppShell.LazyRoutableViewModel | undefined;
         if (!metadata) {
             return;
         }
 
-        if (!metadata.route.guard) {
+        let component: RoutableViewModel;
+
+        if (Array.isArray(metadata)) {
+            const [, loader] = metadata;
+            component = await loader();
+        } else {
+            component = metadata;
+        }
+
+        if (!component.route.guard) {
             return;
         }
-        let result: Awaited<RouteAdapterGuardReturn> = await syncio.ensureSync(metadata.route.guard());
+        let result: Awaited<RouteAdapterGuardReturn> = await syncio.ensureSync(component.route.guard());
 
         if (typeof result == "boolean" && result) {
             return true;
