@@ -165,7 +165,7 @@ export class ViewModel {
      * Sets up a watch on a reactive source and registers the watch handle.
      * Allows tracking and managing the lifecycle of the watch handle within the class.
      *
-     * Additionally, watchers are automatically disposed of after the component is unmounted
+     * Additionally, watchers are automatically disposed after the component is unmounted
      * and all lifecycle hooks have finished executing.
      *
      * @param source  - The reactive source to watch.
@@ -174,7 +174,7 @@ export class ViewModel {
      *
      * @return A custom watch handle with methods to stop, pause, and resume the watcher.
      */
-    protected watch(source: vue.WatchHandle, cb: vue.WatchCallback, options?: vue.WatchOptions): WatchHandle {
+    protected watch(source: vue.WatchSource, cb: vue.WatchCallback, options?: vue.WatchOptions): WatchHandle {
         const handle: vue.WatchHandle = vue.watch(source, cb, options);
         this.watchHandles.push(handle);
 
@@ -202,5 +202,9 @@ export class ViewModel {
     protected computed<T>(options: { get: vue.ComputedGetter<T>, set: vue.ComputedSetter<T> }): T;
     protected computed<T>(arg: any): T {
         return reactive.computed(arg) as T;
+    }
+
+    protected readonly<T>(value: T): T {
+        return reactive.computed(() => value) as T;
     }
 }

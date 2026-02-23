@@ -1,6 +1,5 @@
 import {Action, ActionContext, MVVMError} from "vue-mvvm";
 import {DialogControl, DialogControlConstructor} from "@/DialogControl";
-import {AlertOptions} from "@/AlertControl";
 
 /**
  * Interface of Data that is required to display the confirm.
@@ -15,17 +14,18 @@ export interface ConfirmOptions {
 /**
  * A type definition for a valid ConfirmControl class constructor.
  */
-export type ConfirmControlConstructor<T extends ConfirmControl = ConfirmControl> = DialogControlConstructor<T, [AlertOptions]>;
+export type ConfirmControlConstructor<T extends ConfirmControl = ConfirmControl> = DialogControlConstructor<T, [ConfirmOptions]>;
 
 /**
  * Abstract base class for implementing an universal Confirm dialog.
  */
 export abstract class ConfirmControl extends DialogControl implements Action<boolean> {
-    protected readonly title: string = this.computed(() => this.options.title);
-    protected readonly description: string = this.computed(() => this.options.description);
-    protected readonly options: AlertOptions;
+    protected readonly options: ConfirmOptions;
 
-    public constructor(options: AlertOptions) {
+    public readonly title: string = this.computed(() => this.options.title);
+    public readonly description: string = this.computed(() => this.options.description);
+
+    public constructor(options: ConfirmOptions) {
         super();
 
         this.options = this.ref(options);
