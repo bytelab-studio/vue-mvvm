@@ -77,6 +77,6 @@ This separation prevents ViewModels from registering services at runtime, enforc
 1. **View -> ViewModel:** Direct method calls and reactive property bindings
 2. **ViewModel -> Service:** Via `ctx.getService(ServiceClass)`
 3. **ViewModel -> UserControl:** Via `getUserControl<T>(ref)` using Vue template refs
-3. **ViewModel -> UserControl:**  Via `Delegate` for type-safe event broadcasting
-4. **ViewModel -> Action&lt;T>:** Via `runAction(action)`
-5. **ViewModel -> View:** Via `Delegate` for type-safe event broadcasting
+4. **ViewModel -> UserControl:**  Via `Delegate` for type-safe event broadcasting
+5. **ViewModel -> Action&lt;T>:** Via `runAction(action)`
+6. **ViewModel -> View:** Via `Delegate` for type-safe event broadcasting
