@@ -1,25 +1,26 @@
 # Getting Started
 
 - [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Initialization Steps](#initialization-steps)
-    - [1. Create a Vue Application](#1-create-a-vue-application)
-    - [2. Install Package](#2-install-package)
-    - [3. Create AppShell](#3-create-appshell)
-    - [4. Initialize Vue with MVVM](#4-initialize-vue-with-mvvm)
-  - [File Structure](#file-structure)
-  - [MVVMApp Component](#mvvmapp-component)
+    - [Prerequisites](#prerequisites)
+    - [Initialization Steps](#initialization-steps)
+        - [1. Create a Vue Application](#1-create-a-vue-application)
+        - [2. Install Package](#2-install-package)
+        - [3. Create AppShell](#3-create-appshell)
+        - [4. Initialize Vue with MVVM](#4-initialize-vue-with-mvvm)
+    - [File Structure](#file-structure)
+    - [MVVMApp Component](#mvvmapp-component)
 
 ## Prerequisites
 
 The framework requires the following peer dependencies:
 
 | Dependency   | Version | Purpose                                  |
-| ------------ | ------- | ---------------------------------------- |
+|--------------|---------|------------------------------------------|
 | `vue`        | ^3.5.24 | Vue 3 framework runtime                  |
-| `vue-router` | ^4.6.3  | Required only if using `vue-mvvm/router` |
+| `vue-router` | ^5.0.3  | Required only if using `vue-mvvm/router` |
 
-**Note:** The router dependency is optional and only needed if you plan to use the router extension described in [Router Extension](/extensions/router).
+**Note:** The router dependency is optional and only needed if you plan to use the router extension described
+in [Router Extension](/extensions/router).
 
 ## Initialization Steps
 
@@ -52,14 +53,14 @@ Implement the `AppShell` interface to configure services and plugins.
 import type {AppShell, WritableGlobalContext} from "vue-mvvm";
 
 export class AppConfig implements AppShell {
-    configureService(ctx: WritableGlobalContext): void {
+    configureServices(ctx: WritableGlobalContext): void {
         // Register and mock services
     }
 }
 
 // or alternatively
 export const AppConfig = {
-    configureService(ctx: WritableGlobalContext): void {
+    configureServices(ctx: WritableGlobalContext): void {
         // Register and mock services
     }
 } satisfies AppShell;
@@ -88,15 +89,15 @@ app.mount("#app");
 ```text
 project/
 ├── src/
-│   ├── main.ts                 # Application entry point
-│   ├── config.ts               # AppShell configuration
-│   ├── App.vue                 # Entry component
+│   ├── main.ts                  # Application entry point
+│   ├── config.ts                # AppShell configuration
+│   ├── App.vue                  # Entry component
 │   ├── controls/
-│   │   ├── FormControl.vue     # UserControl
+│   │   ├── FormControl.vue      # UserControl
 │   │   └── FormControl.model.ts # ViewModel of the UserControl
 │   └── views/
-│       ├── MainView.vue        # View 
-│       └── MainView.model.ts   # ViewModel
+│       ├── MainView.vue         # View 
+│       └── MainView.model.ts    # ViewModel
 └── package.json
 ```
 

@@ -4,22 +4,22 @@ layout: home
 
 hero:
   name: "vue-mvvm"
-  text: "A VitePress Site"
-  tagline: My great project tagline
+  text: "Lightweight MVVM for Vue 3"
+  tagline: Typed ViewModels, UserControls, and simple DI for Vue 3
   actions:
     - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
+      text: Getting Started
+      link: /getting-started
     - theme: alt
-      text: API Examples
-      link: /api-examples
+      text: Core Concepts
+      link: /core-concept
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: Typed ViewModels
+    details: Leverages TypeScript classes to encapsulate presentation logic and state with full access to Vue lifecycle hooks.
+  - title: Reusable UserControls
+    details: Abstract complex UI logic into reusable components that communicate seamlessly with parent ViewModels.
+  - title: Simple Dependency Injection
+    details: Built-in lightweight DI container for service management and easy mocking in tests.
 ---
 

@@ -1,27 +1,27 @@
 # Action
 
 - [Action](#action)
-  - [Implementing Actions](#implementing-actions)
-    - [Step 1: Implement Action interface](#step-1-implement-action-interface)
-    - [Step 2: Handling User Interaction](#step-2-handling-user-interaction)
-    - [Step 3: Run Action](#step-3-run-action)
-  - [Multiple Execution Contexts](#multiple-execution-contexts)
-    - [First call wins](#first-call-wins)
-    - [Last call wins](#last-call-wins)
-    - [Collect actions](#collect-actions)
+    - [Implementing Actions](#implementing-actions)
+        - [Step 1: Implement Action interface](#step-1-implement-action-interface)
+        - [Step 2: Handling User Interaction](#step-2-handling-user-interaction)
+        - [Step 3: Run Action](#step-3-run-action)
+    - [Multiple Execution Contexts](#multiple-execution-contexts)
+        - [First call wins](#first-call-wins)
+        - [Last call wins](#last-call-wins)
+        - [Collect actions](#collect-actions)
 
 The Action pattern enables ViewModels to delegate interactive
 tasks to child components and await their results.
 
 This decouples ViewModels from the UI implementation details of user interactions.
 
-| Use Case             | Description                                             |
-| -------------------- | ------------------------------------------------------- |
-| Form Submission      | Collect and validate user input                         |
-| Modal Dialogs        | Present choices and await user decisions                |
+| Use Case             | Description                                               |
+|----------------------|-----------------------------------------------------------|
+| Form Submission      | Collect and validate user input                           |
+| Modal Dialogs        | Present choices and await user decisions                  |
 | Confirmation Prompts | Request user confirmation before actions (e.g., deletion) |
 
-The `Action<T>` interface defines the contract for components that execute 
+The `Action<T>` interface defines the contract for components that execute
 user-initiated operations:
 
 ```typescript
@@ -54,7 +54,7 @@ export class MyFormControlModel extends UserControl implements Action<LoginData>
 
     public onAction(ctx: ActionContext<LoginData>): void {
         this.actionContext = ctx;
-    
+
         // optionally reset form state, focus first input, etc.
     }
 
@@ -83,7 +83,7 @@ export class MyFormControlModel extends UserControl implements Action<LoginData>
 
     public onAction(ctx: ActionContext<LoginData>): void {
         this.actionContext = ctx;
-    
+
         // optionally reset form state, focus first input, etc.
     }
 
@@ -109,16 +109,17 @@ export class MyFormControlModel extends UserControl implements Action<LoginData>
 ```
 
 ```vue [MyFormControl.vue]
+
 <template>
-  <form @submit.prevent="vm.onSubmit">
-    <!-- form fields -->
-    <button type="submit">Submit</button>
-    <button type="button" @click="vm.onCancel">Cancel</button>
-  </form>
+    <form @submit.prevent="vm.onSubmit">
+        <!-- form fields -->
+        <button type="submit">Submit</button>
+        <button type="button" @click="vm.onCancel">Cancel</button>
+    </form>
 </template>
 
 <script setup lang="ts">
-const vm = useUserControl(MyFormControlModel);
+    const vm = useUserControl(MyFormControlModel);
 </script>
 ```
 
@@ -133,7 +134,7 @@ class MainViewModel extends ViewModel {
     private readonly myFormControl: MyFormControlModel | null = this.getUserControl("myFormControl");
 
     public async onLoginBtn(): Promise<void> {
-        if (!myFormControl) {
+        if (!this.myFormControl) {
             return;
         }
 
@@ -149,15 +150,16 @@ class MainViewModel extends ViewModel {
 ```
 
 ```vue [MainView.vue]
+
 <template>
-    <MyFormControl ref="myFormControl" />
+    <MyFormControl ref="myFormControl"/>
     <button @click="vm.onLoginBtn">
         Start login
     </button>
 </template>
 
 <script setup lang="ts">
-const vm = useViewModel(MainViewModel);
+    const vm = useViewModel(MainViewModel);
 </script>
 ```
 
@@ -166,7 +168,7 @@ const vm = useViewModel(MainViewModel);
 ::: info
 It is also possible to implement the Action interface on a class or object that neither is a UserControl or a ViewModel.
 
-For example it can be used to collect multiple API request of the same route and resolve all at once, 
+For example it can be used to collect multiple API request of the same route and resolve all at once,
 so that in the end only one http-request was actually made.
 :::
 

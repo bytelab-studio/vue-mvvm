@@ -1,36 +1,60 @@
 # Router
 
 - [Router](#router)
-  - [Configuration](#configuration)
-    - [History Strategies](#history-strategies)
-    - [RouteAdapter](#routeadapter)
-  - [Simple routable ViewModel](#simple-routable-viewmodel)
-  - [Complex routable ViewModel](#complex-routable-viewmodel)
-  - [Guarded routable ViewModel](#guarded-routable-viewmodel)
-  - [Extract RouteAdapter](#extract-routeadapter)
-  - [Collect RoutableViews](#collect-routableviews)
-  - [Navigation](#navigation)
-    - [Navigate to another RouterView](#navigate-to-another-routerview)
-    - [Navigate back](#navigate-back)
-    - [Accessing route params](#accessing-route-params)
-  - [Injected provider](#injected-provider)
+    - [Configuration](#configuration)
+        - [History Strategies](#history-strategies)
+        - [RouteAdapter](#routeadapter)
+    - [Simple routable ViewModel](#simple-routable-viewmodel)
+    - [Complex routable ViewModel](#complex-routable-viewmodel)
+    - [Guarded routable ViewModel](#guarded-routable-viewmodel)
+    - [Extract RouteAdapter](#extract-routeadapter)
+    - [Collect RoutableViews](#collect-routableviews)
+    - [Navigation](#navigation)
+        - [Navigate to another RouterView](#navigate-to-another-routerview)
+        - [Replace current route](#replace-current-route)
+        - [Navigate back](#navigate-back)
+        - [Accessing route params](#accessing-route-params)
+        - [Access native Vue Router](#access-native-vue-router)
+    - [Injected provider](#injected-provider)
 
 The router extension extends the base MVVM capabilities with routing functionality by:
 
 - Defining a `RoutableViewModel` type that associates ViewModels with route paths
 - Providing `RouterService` for ViewModel-centric navigation
 - Implementing route guards declaratively on ViewModel classes
-- Automatically configure `vue-router` during application initialization
+- Automatically configures `vue-router` during application initialization
 
 ## Configuration
 
-The router extension extends `AppShell` interface via TypeScript interface merging to 
+The router extension extends the `AppShell` interface via TypeScript interface merging to
 add router specific configuration.
 
-| Property  | Type                              | Description                                               |
-| --------- | --------------------------------- | --------------------------------------------------------- |
-| `history` | `"memory" \| "web" \| "web-hash"` | Router history strategy. Defaults to `web`                |
-| `views`   | `RoutableViewModel[]`             | Array of ViewModel constructors with routing information. |
+| Property | Type           | Description                  |
+|----------|----------------|------------------------------|
+| `router` | `RouterConfig` | Router configuration object. |
+
+### RouterConfig
+
+| Property  | Type                                                | Description                                                  |
+|-----------|-----------------------------------------------------|--------------------------------------------------------------|
+| `history` | `"memory" \| "web" \| "web-hash"`                   | Router history strategy. Defaults to `web`                   |
+| `views`   | `Array<RoutableViewModel \| LazyRoutableViewModel>` | Array of ViewModel constructors or lazy loading definitions. |
+
+### Lazy Loading
+
+ViewModels can be lazily loaded by providing a tuple with the path and a factory function that returns a promise of the
+ViewModel.
+
+```typescript
+export class AppConfig implements AppShell {
+    public router: AppShell.RouterConfig = {
+        views: [
+            DashboardViewModel,
+            ["/settings", async () => (await import("./SettingsViewModel")).SettingsViewModel]
+        ]
+    }
+}
+```
 
 ### History Strategies
 
@@ -40,11 +64,13 @@ add router specific configuration.
 
 ### RouteAdapter
 
-The `RouteAdapter` interface defines the contract for exposing routing information on a ViewModel class. This interface is used to declare route paths and optional navigation guards.
+The `RouteAdapter` interface defines the contract for exposing routing information on a ViewModel class. This interface
+is used to declare route paths and optional navigation guards.
 
 ```typescript
 interface RouteAdapter {
     guard?(): RouteAdapterGuardReturn;
+
     path: string;
     params?: Record<string, "integer" | "string">;
 }
@@ -63,7 +89,7 @@ import {RouteAdapter} from "vue-mvvm/router";
 import DashboardView from "./DashboardView.vue";
 
 export class DashboardViewModel extends ViewModel {
-    public static readonly component: Component = DashboardView; 
+    public static readonly component: Component = DashboardView;
     public static readonly route: RouteAdapter = {
         path: "/dashboard"
     }
@@ -83,7 +109,7 @@ import {RouteAdapter} from "vue-mvvm/router";
 import ProductView from "./ProductView.vue";
 
 export class ProductViewModel extends ViewModel {
-    public static readonly component: Component = ProductView; 
+    public static readonly component: Component = ProductView;
     public static readonly route = {
         path: "/product/:id",
         params: {
@@ -95,7 +121,8 @@ export class ProductViewModel extends ViewModel {
 
 When we want path parameters, we can define them like in `vue-router` package with `:<name>`.
 
-Additionally, we need to define a type signature in the `params` object, which is later inferred when navigating programmatically.
+Additionally, we need to define a type signature in the `params` object, which is later inferred when navigating
+programmatically.
 
 ## Guarded routable ViewModel
 
@@ -109,7 +136,7 @@ import DashboardViewModel from "./DashboardView.model";
 import AdminView from "./AdminView.vue";
 
 export class AdminViewModel extends ViewModel {
-    public static readonly component: Component = AdminView; 
+    public static readonly component: Component = AdminView;
     public static readonly route: RouteAdapter = {
         path: "/admin",
         guard(): true | RoutableViewModel {
@@ -124,7 +151,8 @@ export class AdminViewModel extends ViewModel {
 }
 ```
 
-We can define a route guard for access control to this view. The function must either return `true` if it is allowed to navigate to or another RoutableViewModel to redirect to.
+We can define a route guard for access control to this view. The function must either return `true` if it is allowed to
+navigate to or another RoutableViewModel to redirect to.
 
 Additionally, we can declare the guard function as async and return a Promise as well.
 
@@ -132,7 +160,8 @@ Additionally, we can declare the guard function as async and return a Promise as
 
 In larger ViewModels it might be useful to extract the `RouteAdapter` out of the class.
 
-This can be done by either defining it as a standalone object above the class or wrapping the `RouteAdapter` in its own class.
+This can be done by either defining it as a standalone object above the class or wrapping the `RouteAdapter` in its own
+class.
 
 ```typescript
 import {Component} from "vue";
@@ -156,7 +185,7 @@ const AdminRoute: RouteAdapter = {
 }
 
 export class AdminViewModel extends ViewModel {
-    public static readonly component: Component = AdminView; 
+    public static readonly component: Component = AdminView;
     public static readonly route: RouteAdapter = AdminRoute;
 }
 ```
@@ -184,7 +213,7 @@ class AdminRoute implements RouteAdapter {
 }
 
 export class AdminViewModel extends ViewModel {
-    public static readonly component: Component = AdminView; 
+    public static readonly component: Component = AdminView;
     public static readonly route: RouteAdapter = new AdminRoute();
 }
 ```
@@ -198,7 +227,7 @@ import {DashboardViewModel} from "@views/DashboardView.model";
 import {AdminViewModel} from "@views/AdminView.model";
 
 class AppConfig implements AppShell {
-    router = {
+    router: AppShell.RouterConfig = {
         views: [
             DashboardViewModel,
             AdminViewModel
@@ -238,7 +267,8 @@ await this.routerService.navigateTo(OtherViewModel);
 // ...
 ```
 
-Before navigation completes, the target ViewModel's guard (if defined) is evaluated. When the guard returns another ViewModel, a redirect occurs.
+Before navigation completes, the target ViewModel's guard (if defined) is evaluated. When the guard returns another
+ViewModel, a redirect occurs.
 
 If the target `RoutableViewModel` contains path params and declares them in the `params` field of its `RouteAdapter`,
 TypeScript will enforce a second argument where you must pass the required path parameters.
@@ -255,7 +285,7 @@ await this.routerService.navigateTo(ProductViewModel, {
 
 ```typescript [ProductView.model.ts]
 export class ProductViewModel extends ViewModel {
-    public static readonly component: Component = ProductView; 
+    public static readonly component: Component = ProductView;
     public static readonly route = {
         path: "/product/:id",
         params: {
@@ -271,6 +301,17 @@ export class ProductViewModel extends ViewModel {
 
 Use `navigateBack` to move backward in the browser history stack when possible.
 
+### Replace current route
+
+Use `replaceTo` to replace the current entry in the history stack and change the current view.
+This is useful for redirects or after actions where going back to the current page should be prevented.
+
+```typescript
+await this.routerService.replaceTo(OtherViewModel);
+```
+
+Similar to `navigateTo`, this method is fully typed and requires parameters if the target ViewModel defines them.
+
 ### Accessing route params
 
 You can access the current route parameters from a ViewModel via `RouterService.params`.
@@ -284,7 +325,7 @@ export class ProductViewModel extends ViewModel {
 
     public static readonly route = {
         path: "/product/:id",
-        params: { id: "integer" }
+        params: {id: "integer"}
     } satisfies RouteAdapter;
 
     public constructor() {
@@ -297,6 +338,14 @@ export class ProductViewModel extends ViewModel {
         // use id ...
     }
 }
+```
+
+### Access native Vue Router
+
+If you need functionality not exposed by `RouterService`, you can access the native `vue-router` instance.
+
+```typescript
+const nativeRouter = this.routerService.getNative();
 ```
 
 ## Injected provider

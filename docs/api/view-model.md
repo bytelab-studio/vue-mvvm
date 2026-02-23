@@ -1,11 +1,11 @@
 # ViewModel
 
 - [ViewModel](#viewmodel)
-  - [Lifecycle Hooks](#lifecycle-hooks)
-    - [Asynchronous Lifecycle Methods](#asynchronous-lifecycle-methods)
-  - [Reactivity](#reactivity)
-    - [Vue's reactivity vs. ViewModel wrappers](#vues-reactivity-vs-viewmodel-wrappers)
-  - [Accessing GlobalContext](#accessing-globalcontext)
+    - [Lifecycle Hooks](#lifecycle-hooks)
+        - [Asynchronous Lifecycle Methods](#asynchronous-lifecycle-methods)
+    - [Reactivity](#reactivity)
+        - [Vue's reactivity vs. ViewModel wrappers](#vues-reactivity-vs-viewmodel-wrappers)
+    - [Accessing GlobalContext](#accessing-globalcontext)
 
 ViewModels are the core abstraction in the `vue-mvvm` framework, serving as the intermediary
 layer between Vue components (Views) and business logic (Services).
@@ -16,19 +16,19 @@ lifecycle, and provides wrapper methods for Vue's reactivity functions.
 
 ## Lifecycle Hooks
 
-The `ViewModel` class providies the following lifecycle methods, each corresponding 
+The `ViewModel` class provides the following lifecycle methods, each corresponding
 to a specific Vue component lifecycle stage:
 
-| ViewModel Methods | Vue Hook            | Timing                                          |
-| ----------------- | ------------------- | ----------------------------------------------- |
-| `beforeMount`     | `onBeforeMount`     | Before component is mounted to the DOM          |
-| `mounted`         | `onMounted`         | After components is mounted to DOM              |
-| `beforeUpdate`    | `onBeforeUpdate`    | Before reactive state changes trigger re-render |
-| `updated`         | `onUpdated`         | After reactive state changes and DOM updates    |
-| `beforeUnmounted` | `onBeforeUnmounted` | Before component is unmounted                   |
-| `unmounted`       | `onUnmounted`       | After component is unmounted                    |
-| `activated`       | `onActivate`        | When keep-alive component is activated          |
-| `deactivated`     | `onDeactivated`     | When keep-alive component is deactivated        |
+| ViewModel Methods | Vue Hook          | Timing                                          |
+|-------------------|-------------------|-------------------------------------------------|
+| `beforeMount`     | `onBeforeMount`   | Before component is mounted to the DOM          |
+| `mounted`         | `onMounted`       | After components is mounted to DOM              |
+| `beforeUpdate`    | `onBeforeUpdate`  | Before reactive state changes trigger re-render |
+| `updated`         | `onUpdated`       | After reactive state changes and DOM updates    |
+| `beforeUnmount`   | `onBeforeUnmount` | Before component is unmounted                   |
+| `unmounted`       | `onUnmounted`     | After component is unmounted                    |
+| `activated`       | `onActivated`     | When keep-alive component is activated          |
+| `deactivated`     | `onDeactivated`   | When keep-alive component is deactivated        |
 
 ### Asynchronous Lifecycle Methods
 
@@ -39,17 +39,18 @@ before certain UI interactions are enabled, consider using a loading state varia
 
 ## Reactivity
 
-The ViewModel class provides two protected methods for creating reactive properties.
+The ViewModel class provides protected methods for creating reactive properties.
+For a detailed explanation of the reactivity system, see the [Reactivity](./reactivity) documentation.
 
-These methods enables to declare reactive properties as class fields, which are then
+These methods enable you to declare reactive properties as class fields, which are then
 automatically transformed into Vue reactivity references through a proxy reactivity system.
 
 ### Vue's reactivity vs. ViewModel wrappers
 
-Regardles of when using Vue's reactivity or the ViewModel wrappers, the result will be the same.
-The only goal of the ViewModel wrappers is to achive a better DX of writting and reading properties.
+Regardless of whether you use Vue's reactivity or the ViewModel wrappers, the result will be the same.
+The goal of the ViewModel wrappers is to achieve a better developer experience (DX).
 
-With the Vue's reactivity a counter would look like this:
+With standard Vue's reactivity, a counter would look like this:
 
 ```typescript
 export class CounterViewModel extends ViewModel {
@@ -62,13 +63,14 @@ export class CounterViewModel extends ViewModel {
 ```
 
 ```vue
+
 <template>
     <h1>Count {{ vm.count.value }}</h1>
     <button @click="vm.increment">Increment</button>
 </template>
 
 <script setup lang="ts">
-const vm = useViewModel(CounterViewModel);
+    const vm = useViewModel(CounterViewModel);
 </script>
 ```
 
@@ -87,6 +89,7 @@ export class CounterViewModel extends ViewModel {
 ```
 
 ```vue
+
 <template>
     <h1>Count {{ vm.count.value }}</h1> <!-- [!code --] -->
     <h1>Count {{ vm.count }}</h1> <!-- [!code ++] -->
@@ -94,7 +97,7 @@ export class CounterViewModel extends ViewModel {
 </template>
 
 <script setup lang="ts">
-const vm = useViewModel(CounterViewModel);
+    const vm = useViewModel(CounterViewModel);
 </script>
 ```
 
@@ -114,6 +117,7 @@ export class CounterViewModel extends ViewModel {
 ```
 
 ```vue
+
 <template>
     <h1>Count {{ vm.count }}</h1>
     <h2>DoubleCount {{ vm.doubleCount }}</h2> <!-- [!code ++] -->
@@ -121,7 +125,7 @@ export class CounterViewModel extends ViewModel {
 </template>
 
 <script setup lang="ts">
-const vm = useViewModel(CounterViewModel);
+    const vm = useViewModel(CounterViewModel);
 </script>
 ```
 
@@ -130,10 +134,11 @@ const vm = useViewModel(CounterViewModel);
 Every ViewModel instance has access to a protected, readonly field called `ctx` of type `ReadableGlobalContext`.
 
 The method `getService` retrieves service instances from the global dependency injection container.
-It accepts a service class constructor, a `ServiceKey` or an `AsyncServiceKey` as its parameter and returns a fully-typed instance of that service.
+It accepts a service class constructor, a `ServiceKey` or an `AsyncServiceKey` as its parameter and returns a
+fully-typed instance of that service.
 
 ```typescript
-import {FooService} from "@servides/foo.service";
+import {FooService} from "@services/foo.service";
 
 export class MyViewModel extends ViewModel {
     private readonly fooService: FooService;

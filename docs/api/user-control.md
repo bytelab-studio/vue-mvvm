@@ -1,9 +1,9 @@
 # UserControl
 
 - [UserControl](#usercontrol)
-  - [When to Use UserControls](#when-to-use-usercontrols)
-  - [When to not Use UserControls](#when-to-not-use-usercontrols)
-  - [Access UserControls from ViewModels](#access-usercontrols-from-viewmodels)
+    - [When to Use UserControls](#when-to-use-usercontrols)
+    - [When to not Use UserControls](#when-to-not-use-usercontrols)
+    - [Access UserControls from ViewModels](#access-usercontrols-from-viewmodels)
 
 A UserControl is a specialized ViewModel designed for reusable UI components that contain
 significant presentation logic. The class serves as an abstraction layer when UI logic becomes too
@@ -16,9 +16,10 @@ UserControls are appropriate when:
 - A section of UI requires complex state management (e.g multi-step forms, data tables with filtering/sorting)
 - The same UI component needs to be reused across multiple ViewModels
 - A UI section needs to communicate results back to its parent ViewModel (typically via the `Action` interface)
-- Seperation of concerns would benefit from isolating a UI section's logic
+- Separation of concerns would benefit from isolating a UI section's logic
 
-UserControls differ from standard Vue components in that they follow the MVVM pattern with full access to the framework's features (lifecycle hooks, dependency injection, action execution)
+UserControls differ from standard Vue components in that they follow the MVVM pattern with full access to the
+framework's features (lifecycle hooks, dependency injection, action execution)
 
 ## When to not Use UserControls
 
@@ -30,7 +31,7 @@ For those cases, normal Vue component, with props and event binding, must be use
 
 ## Access UserControls from ViewModels
 
-Parent ViewModels access UserControls instances using `getUserControl` protected method,
+Parent ViewModels access UserControl instances using the `getUserControl` protected method,
 which retrieves them via Vue template refs.
 
 ```vue
@@ -39,29 +40,29 @@ which retrieves them via Vue template refs.
 </template>
 
 <script setup lang="ts">
-const vm = useUserControl(ChildControlModel);
+    const vm = useUserControl(ChildControlModel);
 </script>
 ```
 
 ```typescript
 // ChildControl.model.ts
 export class ChildControlModel extends UserControl {
-  public counter: number = this.ref(0);
+    public counter: number = this.ref(0);
 
-  public increment(): void {
-    this.counter++;
-  }
+    public increment(): void {
+        this.counter++;
+    }
 }
 ```
 
 ```vue
 <!-- ParentView.vue -->
 <template>
-  <ChildControl ref="myChildControl" />
+    <ChildControl ref="myChildControl"/>
 </template>
 
 <script setup lang="ts">
-const vm = useViewModel(ParentViewModel);
+    const vm = useViewModel(ParentViewModel);
 </script>
 
 ```
@@ -69,14 +70,14 @@ const vm = useViewModel(ParentViewModel);
 ```typescript
 // ParentView.model.ts
 export class ParentViewModel extends ViewModel {
-  public myChildControl: ChildControlModel | null = this.getUserControl<ChildControlModel>("myChildControl");
+    public myChildControl: ChildControlModel | null = this.getUserControl<ChildControlModel>("myChildControl");
 
-  public mounted() {
-    // myChildControl is first available onMounted and afterwards
-    console.log(myChildControl.counter);
-    console.log(myChildControl.increment());
-    console.log(myChildControl.counter);
-  }
+    public mounted() {
+        // myChildControl is first available onMounted and afterwards
+        console.log(this.myChildControl.counter);
+        console.log(this.myChildControl.increment());
+        console.log(this.myChildControl.counter);
+    }
 }
 ```
 

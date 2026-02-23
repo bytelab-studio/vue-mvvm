@@ -1,29 +1,31 @@
 # Overview
 
 - [Overview](#overview)
-  - [Purpose and Scope](#purpose-and-scope)
-  - [Package Structure](#package-structure)
-    - [Distribution Format](#distribution-format)
-    - [Peer Dependencies](#peer-dependencies)
-  - [Core Components](#core-components)
-    - [Base Classes](#base-classes)
-    - [Composition Hooks](#composition-hooks)
-    - [Infrastructure](#infrastructure)
-  - [Data Flow](#data-flow)
-  - [Design Philosophy](#design-philosophy)
+    - [Purpose and Scope](#purpose-and-scope)
+    - [Package Structure](#package-structure)
+        - [Distribution Format](#distribution-format)
+        - [Peer Dependencies](#peer-dependencies)
+    - [Core Components](#core-components)
+        - [Base Classes](#base-classes)
+        - [Composition Hooks](#composition-hooks)
+        - [Infrastructure](#infrastructure)
+    - [Data Flow](#data-flow)
+    - [Design Philosophy](#design-philosophy)
 
 ## Purpose and Scope
 
-`vue-mvvm` is a lightweight MVVM (Model-View-ViewModel) framework for Vue 3 applications. It provides typed ViewModels, reusable UserControls, and a minimal dependency injection container.
+`vue-mvvm` is a lightweight MVVM (Model-View-ViewModel) framework for Vue 3 applications. It provides typed ViewModels,
+reusable UserControls, and a minimal dependency injection container.
 
-**Current Status:** `vue-mvvm` is in early-stage development (version 0.3.0). Not all features may be stable in production environments and implementations can change rapidly.
+**Current Status:** `vue-mvvm` is in early-stage development (version 0.5.0). Not all features may be stable in
+production environments and implementations can change rapidly.
 
 ## Package Structure
 
 `vue-mvvm` is distributed as three separate entry points to support modular adoption:
 
 | Module | Import Path       | Purpose                                                       |
-| ------ | ----------------- | ------------------------------------------------------------- |
+|--------|-------------------|---------------------------------------------------------------|
 | Core   | `vue-mvvm`        | Essential MVVM utilities                                      |
 | Router | `vue-mvvm/router` | Plugin to enable ViewModel routing using `vue-router` package |
 | Dialog | `vue-mvvm/dialog` | Plugin for easy dialog management from ViewModel code         |
@@ -40,14 +42,13 @@ Any module beyond Core is optional and will be tree-shaken when unused.
 ### Peer Dependencies
 
 - `vue`: ^3.5.24
-- `vue-router`: ^4.6.3 (only required when using `vue-mvvm/router`)
-  
+- `vue-router`: ^5.0.3 (only required when using `vue-mvvm/router`)
+
 ## Core Components
 
 ```mermaid
 flowchart LR
-    %% ==== Subgraphs / Groups ====
-
+%% ==== Subgraphs / Groups ====
     subgraph CompositionHooks[Composition Hooks]
         CH1[useViewModel<br/>src/core/hooks/useViewModel.ts]
         CH2[useUserControl<br/>src/core/hooks/useUserControl.ts]
@@ -71,44 +72,40 @@ flowchart LR
         BC2[ViewModel<br/>src/core/ViewModel.ts]
     end
 
-    %% ==== Relationships ====
+%% ==== Relationships ====
 
-    %% Composition Hooks to Base Classes
+%% Composition Hooks to Base Classes
     CH1 -- instantiates --> BC2
     CH2 -- instantiates --> BC1
-
-    %% Base Class inheritance
-    BC2 -- extends --> BC1
-
-    %% MVVM initialization
+%% Base Class inheritance
+    BC1 -- extends --> BC2
+%% MVVM initialization
     CFG1 -- uses --> CFG2
     CFG1 -- initializes --> DI1
-
-    %% ViewModel implements Action Interface
+%% ViewModel implements Action Interface
     BC2 -- implements --> ACT1
-
-    %% ViewModel accesses GlobalContext
+%% ViewModel accesses GlobalContext
     BC2 -- accesses --> DI1
 ```
 
 ### Base Classes
 
 | Class         | Purpose                                                                                |
-| ------------- | -------------------------------------------------------------------------------------- |
+|---------------|----------------------------------------------------------------------------------------|
 | `ViewModel`   | Base class providing lifecycle hooks, context access and action execution capabilities |
 | `UserControl` | Extends `ViewModel` for reusable UI Components with encapsulated logic                 |
 
 ### Composition Hooks
 
 | Hook             | Purpose                                                                 |
-| ---------------- | ----------------------------------------------------------------------- |
-| `useViewModel`   | Instantiates ViewModels and bind their lifecycle to Vue components      |
+|------------------|-------------------------------------------------------------------------|
+| `useViewModel`   | Instantiates ViewModels and binds their lifecycle to Vue components     |
 | `useUserControl` | Instantiates UserControls and exposes them via symbol for parent access |
 
 ### Infrastructure
 
 | Component       | Purpose                                                                              |
-| --------------- | ------------------------------------------------------------------------------------ |
+|-----------------|--------------------------------------------------------------------------------------|
 | `createMVVM`    | Initializes the application, configures DI container, and registers plugins          |
 | `GlobalContext` | Dependency injection container with service registry and lazy instantiation          |
 | `Action`        | Interface for asynchronous operations between ViewModels returning `ActionResult<T>` |
