@@ -174,7 +174,7 @@ export class ViewModel {
      *
      * @return A custom watch handle with methods to stop, pause, and resume the watcher.
      */
-    protected watch(source: vue.WatchHandle, cb: vue.WatchCallback, options?: vue.WatchOptions): WatchHandle {
+    protected watch(source: vue.WatchSource, cb: vue.WatchCallback, options?: vue.WatchOptions): WatchHandle {
         const handle: vue.WatchHandle = vue.watch(source, cb, options);
         this.watchHandles.push(handle);
 
