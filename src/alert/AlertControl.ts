@@ -20,9 +20,10 @@ export type AlertControlConstructor<T extends AlertControl = AlertControl> = Dia
  * Abstract base class for implementing an universal Alert dialog.
  */
 export abstract class AlertControl extends DialogControl implements Action<void> {
-    protected readonly title: string = this.computed(() => this.options.title);
-    protected readonly description: string = this.computed(() => this.options.description);
     protected readonly options: AlertOptions;
+
+    public readonly title: string = this.computed(() => this.options.title);
+    public readonly description: string = this.computed(() => this.options.description);
 
     public constructor(options: AlertOptions) {
         super();
