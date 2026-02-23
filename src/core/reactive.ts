@@ -52,11 +52,11 @@ function isReactiveField(value: any): value is ReactiveMarker<any> {
     return typeof value == "object" && value != null && "__isReactiveField" in value && value.__isReactiveField === true;
 }
 
-export function applyReactivity<T extends ViewModel>(vm: T): T {
+export function applyReactivity<T extends object>(vm: T): T {
     const reactiveMap: Map<any, [ReactiveMarker<any>, vue.Ref | vue.WritableComputedRef<any>]> = new Map<any, [ReactiveMarker<any>, vue.Ref | vue.WritableComputedRef<any>]>();
 
     return new Proxy(vm, {
-        get(target: ViewModel, key: string | symbol): any {
+        get(target: object, key: string | symbol): any {
             const slot: [ReactiveMarker<any>, vue.Ref | vue.WritableComputedRef<any>] | undefined = reactiveMap.get(key);
             if (slot) {
                 switch (slot[0].__reactiveType) {
