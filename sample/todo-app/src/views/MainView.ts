@@ -32,7 +32,7 @@ export class MainViewModel extends ViewModel {
         this.todoService = this.ctx.getService(TodoService);
     }
 
-    mounted(): void | Promise<void> {
+    protected mounted(): void | Promise<void> {
         this.todos = this.todoService.getTodos();
     }
 

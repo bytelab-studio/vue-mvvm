@@ -27,3 +27,5 @@ export * from "@/Action";
 // Utils
 export * from "@/errors";
 export * as syncio from "@/syncio";
+export * as reactive from "@/reactive";
+export * from "@/delegate";

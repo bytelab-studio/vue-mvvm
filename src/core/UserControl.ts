@@ -1,4 +1,4 @@
-import { ViewModel, ViewModelConstructor } from "./ViewModel";
+import {ViewModel, ViewModelConstructor} from "./ViewModel";
 
 /**
  * A type definition for a valid UserControl class constructor.

@@ -1,4 +1,3 @@
-import {type Component, TemplateRef, useTemplateRef} from "vue";
 import * as vue from "vue";
 import * as syncio from "@/syncio";
 import * as reactive from "@/reactive";
@@ -10,17 +9,25 @@ import {UserControl} from "@/UserControl";
 /**
  * A type definition for a valid ViewModel class constructor.
  */
-export type ViewModelConstructor<Instance extends ViewModel = ViewModel, Arguments extends [...unknown[]] = []> =
-    (new (...args: Arguments) => Instance) &
-    {
-        readonly component: Component;
-    }
+export type ViewModelConstructor<Instance extends ViewModel = ViewModel, Arguments extends [...unknown[]] = []> = (new (...args: Arguments) => Instance);
+
+/**
+ * An interface representing a handle to control a watcher
+ */
+export interface WatchHandle {
+    stop(): void;
+
+    pause(): void;
+
+    resume(): void;
+}
 
 /**
  * The ViewModel is the lowest possible abstraction class in MVVM.
  * It declares basic Vue lifecycle hooks
  */
 export class ViewModel {
+    private watchHandles: vue.WatchHandle[];
 
     /**
      * Represents a readonly global context that provides features like DI
@@ -28,57 +35,69 @@ export class ViewModel {
     protected readonly ctx: ReadableGlobalContext;
 
     public constructor() {
+        this.watchHandles = [];
         this.ctx = useGlobalContext(true);
 
         return reactive.applyReactivity(this);
     }
 
     /**
+     * @internal
+     */
+    public disposeWatchers(): void {
+        for (const handle of this.watchHandles) {
+            handle.stop();
+        }
+
+        this.watchHandles = [];
+    }
+
+    /**
      * Hook for Vue's `onBeforeMount`
      */
-    public beforeMount(): void | Promise<void> {
+    protected beforeMount(): void | Promise<void> {
     }
 
     /**
      * Hook for Vue's `onMounted`
      */
-    public mounted(): void | Promise<void> {
+    protected mounted(): void | Promise<void> {
     }
 
     /**
      * Hook for Vue's `onBeforeUpdate`
      */
-    public beforeUpdate(): void | Promise<void> {
+    protected beforeUpdate(): void | Promise<void> {
     }
 
     /**
      * Hook for Vue's `onUpdated`
      */
-    public updated(): void | Promise<void> {
+    protected updated(): void | Promise<void> {
     }
 
     /**
      * Hook for Vue's `onBeforeUnmount`
      */
-    public beforeUnmount(): void | Promise<void> {
+    protected beforeUnmount(): void | Promise<void> {
     }
 
     /**
      * Hook for Vue's `onUnmounted`
      */
-    public unmounted(): void | Promise<void> {
+    protected unmounted(): void | Promise<void> {
     }
 
     /**
      * Hook for Vue's `onActivated`
      */
-    public activated(): void | Promise<void> {
+    protected activated(): void | Promise<void> {
     }
 
     /**
      * Hook for Vue's `onDeactivated`
      */
-    public deactivated(): void | Promise<void> {
+    protected deactivated(): void | Promise<void> {
     }
 
     /**
@@ -102,61 +121,77 @@ export class ViewModel {
     }
 
     /**
-     * Collect a UserControl that is bound to the View using a Vue.js template ref
-     *
-     * @param ref - The Vue.js Template ref
-     *
-     * @returns The UserControl of the bounded UI Element
-     */
-    protected getUserControl<T extends UserControl>(ref: string): T;
-
-    /**
-     * Collects multiple UserControls that are bound to the View using a Vue.js template ref
+     * Collect UserControl that are bound to the View using a Vue.js template ref
      *
      * @param ref  - The Vue.js Template ref
-     * @param many - Expected an array of elements on collection
      *
-     * @returns A array with the UserControl of the bounded UI Element
+     * @returns UserControl of the bounded UI Element
      */
-    protected getUserControl<T extends UserControl>(ref: string, many: true): T[];
+    protected getUserControl<T extends UserControl | UserControl[]>(ref: string): T | null {
+        const reference: Readonly<vue.ShallowRef> = vue.useTemplateRef(ref);
 
-    protected getUserControl<T extends UserControl>(ref: string, many?: true): T | T[] {
-        const reference: TemplateRef<any | any[]> = useTemplateRef(ref);
-        if (!reference.value) {
-            throw new Error(`UserControl '${ref}' could not be found`);
-        }
-
-        const value: any | any[] = reference.value;
-        if (Array.isArray(value)) {
-            if (!many) {
-                throw new Error(`Found multiple UserControl's for '${ref}'`);
+        return reactive.computed(() => {
+            if (!reference.value) {
+                return null;
             }
 
-            const result: T[] = [];
+            const value: any | any[] = reference.value;
+            if (Array.isArray(value)) {
+                const result: T[] = [];
 
-            for (let i: number = 0; i < value.length; i++) {
-                const item: any = value[i];
+                for (let i: number = 0; i < value.length; i++) {
+                    const item: any = value[i];
 
-                if (userControlSymbol in item && item[userControlSymbol] instanceof UserControl) {
-                    result.push(item[userControlSymbol] as T);
-                    continue;
+                    if (userControlSymbol in item && item[userControlSymbol] instanceof UserControl) {
+                        result.push(item[userControlSymbol] as T);
+                        continue;
+                    }
+
+                    throw new Error(`UserControl '${ref}', at index ${i} is missing metadata`);
                 }
 
-                throw new Error(`UserControl '${ref}', at index ${i} is missing metadata`);
+                return result;
             }
 
-            return result;
-        }
+            if (userControlSymbol in value && value[userControlSymbol] instanceof UserControl) {
+                return value[userControlSymbol] as T;
+            }
 
-        if (many) {
-            throw new Error(`Found only one UserControl's for '${ref}' (many = true)`);
-        }
+            throw new Error(`UserControl '${ref}' is missing metadata`);
+        }) as T | null;
+    }
 
-        if (userControlSymbol in value && value[userControlSymbol] instanceof UserControl) {
-            return value as T;
-        }
+    /**
+     * Sets up a watch on a reactive source and registers the watch handle.
+     * Allows tracking and managing the lifecycle of the watch handle within the class.
+     *
+     * Additionally, watchers are automatically disposed after the component is unmounted
+     * and all lifecycle hooks have finished executing.
+     *
+     * @param source  - The reactive source to watch.
+     * @param cb      - The callback function that gets triggered when the source changes.
+     * @param options - Optional configuration object for the watcher (e.g., deep, immediate).
+     *
+     * @return A custom watch handle with methods to stop, pause, and resume the watcher.
+     */
+    protected watch(source: vue.WatchSource, cb: vue.WatchCallback, options?: vue.WatchOptions): WatchHandle {
+        const handle: vue.WatchHandle = vue.watch(source, cb, options);
+        this.watchHandles.push(handle);
 
-        throw new Error(`UserControl '${ref}' is missing metadata`);
+        let revoked: boolean = false;
+        return {
+            stop: () => {
+                if (revoked) {
+                    return;
+                }
+
+                revoked = true;
+                this.watchHandles = this.watchHandles.filter(x => x != handle);
+                handle.stop();
+            },
+            pause: handle.pause,
+            resume: handle.resume
+        }
     }
 
     protected ref<T>(initial: T): T {
@@ -167,5 +202,9 @@ export class ViewModel {
     protected computed<T>(options: { get: vue.ComputedGetter<T>, set: vue.ComputedSetter<T> }): T;
     protected computed<T>(arg: any): T {
         return reactive.computed(arg) as T;
+    }
+
+    protected readonly<T>(value: T): T {
+        return reactive.computed(() => value) as T;
     }
 }

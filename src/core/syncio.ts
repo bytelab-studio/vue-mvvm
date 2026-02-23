@@ -3,7 +3,7 @@
  *
  * @example
  * // User defined function that might return a promise or directly a value
- * function foo(sendPromise: boolean): Promise<number>|number {
+ * function foo(sendPromise: boolean): Promise<number>|number> {
  *     if (sendPromise) {
  *         return Promise.resolve(123);
  *     }
@@ -19,7 +19,7 @@
  *
  * @return A promise with the awaited value if it was required
  */
-export async function ensureSync<T>(val: T|Promise<T>): Promise<Awaited<T>> {
+export async function ensureSync<T>(val: T | Promise<T>): Promise<Awaited<T>> {
     if (val instanceof Promise) {
         val = await val;
     }

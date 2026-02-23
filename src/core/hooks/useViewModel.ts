@@ -1,5 +1,32 @@
-import {onBeforeMount, onBeforeUnmount, onBeforeUpdate, onMounted, onUnmounted, onUpdated, onActivated, onDeactivated} from "vue";
+import {
+    onActivated,
+    onBeforeMount,
+    onBeforeUnmount,
+    onBeforeUpdate,
+    onDeactivated,
+    onMounted,
+    onUnmounted,
+    onUpdated
+} from "vue";
 import {ViewModel, type ViewModelConstructor} from "@/ViewModel";
+import * as syncio from "@/syncio";
+
+/**
+ * Used for override protected lifecycle methods in the ViewModel
+ */
+interface LifecycleHooks {
+    beforeMount(): void | Promise<void>;
+    mounted(): void | Promise<void>;
+
+    beforeUpdate(): void | Promise<void>;
+    updated(): void | Promise<void>;
+
+    beforeUnmount(): void | Promise<void>;
+    unmounted(): void | Promise<void>;
+
+    activated(): void | Promise<void>;
+    deactivated(): void | Promise<void>;
+}
 
 /**
  * Binds a ViewModel to the current View
@@ -11,7 +38,7 @@ import {ViewModel, type ViewModelConstructor} from "@/ViewModel";
 export function useViewModel<T extends ViewModel>(cls: ViewModelConstructor<T>): T {
     const vm: T = new cls();
 
-    useViewModelInstance(vm);
+    useViewModelInstance(vm as unknown as LifecycleHooks & ViewModel);
 
     return vm;
 }
@@ -19,7 +46,7 @@ export function useViewModel<T extends ViewModel>(cls: ViewModelConstructor<T>):
 /**
  * @internal
  */
-export function useViewModelInstance(vm: ViewModel): void {
+export function useViewModelInstance(vm: LifecycleHooks & ViewModel): void {
     onBeforeMount(() => vm.beforeMount());
     onMounted(() => vm.mounted());
 
@@ -27,7 +54,10 @@ export function useViewModelInstance(vm: ViewModel): void {
     onUpdated(() => vm.updated());
 
     onBeforeUnmount(() => vm.beforeUnmount());
-    onUnmounted(() => vm.unmounted());
+    onUnmounted(async () => {
+        await syncio.ensureSync(vm.unmounted());
+        vm.disposeWatchers();
+    });
 
     onActivated(() => vm.activated());
     onDeactivated(() => vm.deactivated());
