@@ -1,4 +1,13 @@
 import {defineConfig} from "vitepress";
+import CodeAPI from "../capi/typedoc-sidebar.json";
+
+function normalizeSidebar(items: any) {
+  return items.map((item: any) => ({
+    ...item,
+    link: item.link ? item.link.replace(/^\/?docs\//, "/") : item.link,
+    items: item.items ? normalizeSidebar(item.items) : undefined
+  }));
+}
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -9,7 +18,8 @@ export default defineConfig({
         nav: [
             {text: "Home", link: "/"},
             {text: "Guide", link: "/overview"},
-            {text: "API", link: "/api/view-model"}
+            {text: "API", link: "/api/view-model"},
+            {text: "Code API", link: "/capi/"}
         ],
 
         sidebar: [
@@ -46,6 +56,10 @@ export default defineConfig({
                     {text: "Markdown Examples", link: "/markdown-examples"},
                     {text: "Runtime API Examples", link: "/api-examples"}
                 ]
+            },
+            {
+                text: "Code API",
+                items: normalizeSidebar(CodeAPI)
             }
         ],
 

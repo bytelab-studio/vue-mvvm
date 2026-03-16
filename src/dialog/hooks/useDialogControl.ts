@@ -25,7 +25,7 @@ export function useDialogControl<Instance extends DialogControl>(cls: DialogCont
 
     const control: DialogControl | undefined = (instance.vnode.props as any)[propSymbol];
     if (control instanceof cls) {
-        useViewModelInstance(control);
+        useViewModelInstance(control as any);
         return control;
     }
 
