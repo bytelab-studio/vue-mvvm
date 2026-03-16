@@ -101,6 +101,250 @@ export type RoutableViewModel = ViewModelConstructor & {
 }
 
 /**
+ * Wrapper class for resolving query parameters
+ */
+export class RouterQuery {
+    private router: Router;
+
+    /**
+     * @internal
+     */
+    public constructor(router: Router) {
+        this.router = router;
+    }
+
+    /**
+     * Retrieves an integer query parameter.
+     *
+     * If the parameter is missing or cannot be parsed as a safe integer,
+     * `null` is returned.
+     *
+     *
+     * @param name The query parameter name.
+     * @param many Reads multiple values of the parameter (See overload).
+     *
+     * @returns A integer or `null`
+     */
+    public getIntegerOrDefault(name: string, many?: false): number | null;
+
+    /**
+     * Retrieves an integer query parameter.
+     *
+     * If the parameter is missing or cannot be parsed as a safe integer,
+     * `null` is returned.
+     *
+     * If `strict` is enabled, the method returns `null`
+     * if any value cannot be parsed as an integer, otherwise 
+     * the faulty value is ignored 
+     *
+     * @param name   - The query parameter name.
+     * @param many   - Reads multiple values of the parameter.
+     * @param strict - When `true`, parsing fails if any value is invalid.
+     *
+     * @returns A integer array or `null` 
+     */
+    public getIntegerOrDefault(name: string, many: true, strict: boolean): number[] | null;
+
+    public getIntegerOrDefault(name: string, many: boolean = false, strict: boolean = false): number | number[] | null {
+        if (many) {
+            return this.getIntegerOrDefaultMany(name, strict);
+        }
+
+        return this.getIntegerOrDefaultSingle(name);
+    }
+
+    /**
+     * Retrieves an integer query parameter.
+     *
+     * Throws an error if the parameter does not exist or cannot be parsed
+     * as a safe integer.
+     *
+     * @param name   - The query parameter name.
+     * @param many   - Reads multiple values of the parameter (See overload).
+     *
+     * @throws If the parameter is missing or cannot be parsed.
+     *
+     * @returns A integer
+     */
+    public getIntegerOrThrow(name: string, many?: false): number;
+    /**
+     * Retrieves an integer query parameter.
+     *
+     * Throws an error if the parameter does not exist or cannot be parsed
+     * as a safe integer.
+     *
+     * @param name   - The query parameter name.
+     * @param many   - Reads multiple values of the parameter.
+     * @param strict - When `true`, parsing fails if any value is invalid.
+     *
+     * @throws If the parameter is missing or cannot be parsed.
+     *
+     * @returns A integer array
+     */
+    public getIntegerOrThrow(name: string, many: true, strict: boolean): number[];
+
+    public getIntegerOrThrow(name: string, many: boolean = false, strict: boolean = false): number | number[] {
+        if (many) {
+            const values: number[] | null = this.getIntegerOrDefaultMany(name, strict);
+            if (values == null) {
+                throw new Error(`Query parameter '${name}' was not found or could not be parsed`);
+            }
+
+            return values;
+        }
+
+        const value: number | null = this.getIntegerOrDefaultSingle(name);
+        if (value == null) {
+            throw new Error(`Query parameter '${name}' was not found or could not be parsed`);
+        }
+
+        return value;
+    }
+
+    private getIntegerOrDefaultMany(name: string, strict: boolean): number[] | null {
+        const values: string[] | null = this.getStringOrDefaultMany(name);
+        if (values == null) {
+            return null;
+        }
+
+        const integers: number[] = [];
+        for (const value of values) {
+            const integer: number | null = this.parseInt(value);
+            if (integer != null) {
+                integers.push(integer);
+                continue;
+            }
+
+            if (strict) {
+                return null;
+            }
+        }
+
+        return integers;
+    }
+
+    private getIntegerOrDefaultSingle(name: string): number | null {
+        const value: string | null = this.getStringOrDefaultSingle(name);
+        if (value == null) {
+            return null;
+        }
+
+        return this.parseInt(value);
+    }
+
+    private parseInt(value: string): number | null {
+        if (!/^-?\d+$/.test(value)) {
+            return null;
+        }
+
+        const int = Number(value);
+        if (Number.isNaN(int) || !Number.isSafeInteger(int)) {
+            return null;
+        }
+
+        return int;
+    }    
+
+    /**
+     * Retrieves a string query parameter.
+     *
+     * If the parameter is missing, `null` is returned.
+     *
+     * @param name - The query parameter name.
+     * @param many - Reads multiple values of the parameter (See overload).
+     *
+     * @returns A string or null
+     */    
+    public getStringOrDefault(name: string, many?: false): string | null;
+    /**
+     * Retrieves a string query parameter.
+     *
+     * If the parameter is missing, `null` is returned.
+     *
+     * @param name - The query parameter name.
+     * @param many - Reads multiple values of the parameter.
+     *
+     * @returns A string array or null
+     */
+    public getStringOrDefault(name: string, many: true): string[] | null;
+
+    public getStringOrDefault(name: string, many: boolean = false): string | string[] | null {
+        if (many) {
+            return this.getStringOrDefaultMany(name);
+        }
+
+        return this.getStringOrDefaultSingle(name);
+    }
+
+    /**
+     * Retrieves a string query parameter.
+     *
+     * Throws an error if the parameter does not exist.
+     *
+     * @param name - The query parameter name.
+     * @param many - Reads multiple values of the parameter (See overload).
+     *
+     * @throws If the parameter does not exist.
+     *
+     * @returns A string
+     */
+    public getStringOrThrow(name: string, many?: false): string;
+    /**
+     * Retrieves a string query parameter.
+     *
+     * Throws an error if the parameter does not exist.
+     *
+     * @param name - The query parameter name.
+     * @param many - Reads multiple values of the parameter.
+     *
+     * @throws Error If the parameter does not exist.
+     *
+     * @returns A string array
+     */
+    public getStringOrThrow(name: string, many: true): string[];
+
+    public getStringOrThrow(name: string, many: boolean = false): string | string[] {
+        if (many) {
+            const values: string[] | null = this.getStringOrDefaultMany(name);
+            if (values == null) {
+                throw new Error(`Query parameter '${name}' was not found`);
+            }
+
+            return values;
+        }
+
+        const value: string | null = this.getStringOrDefaultSingle(name);
+        if (value == null) {
+            throw new Error(`Query parameter '${name}' was not found`);
+        }
+
+        return value;
+    }
+
+    private getStringOrDefaultMany(name: string): string[] | null {
+        const raw: string | null | Array<string | null> | undefined = this.router.currentRoute.value.query[name];
+        if (typeof raw == "undefined" || raw == null) {
+            return null;
+        }
+
+        if (!Array.isArray(raw)) {
+            return [raw];
+        }
+
+        return raw.filter(x => x != null);
+    }
+
+    private getStringOrDefaultSingle(name: string): string | null {
+        const raw: string | null | Array<string | null> | undefined = this.router.currentRoute.value.query[name];
+        if (typeof raw == "undefined" || raw == null || Array.isArray(raw)) {
+            return null;
+        }
+
+        return raw;
+    }
+}
+
+/**
  * Wrapper class for resolving path parameters
  */
 export class RouterParams {
@@ -131,7 +375,7 @@ export class RouterParams {
             throw new Error(`Route parameter '${name}' is not a valid integer`);
         }
 
-        const value: number = Number.parseInt(raw);
+        const value: number = Number.parseInt(raw, 10);
         if (!Number.isFinite(value)) {
             throw new Error(`Route parameter '${name}' is not a valid integer`);
         }
@@ -163,6 +407,7 @@ export class RouterService {
     private readonly router: Router;
 
     public readonly params: RouterParams;
+    public readonly query: RouterQuery;
 
     /**
      * @internal
@@ -170,6 +415,7 @@ export class RouterService {
     public constructor(router: Router) {
         this.router = router;
         this.params = new RouterParams(router);
+        this.query = new RouterQuery(router);
     }
 
     /**
