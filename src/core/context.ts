@@ -225,3 +225,12 @@ export function useGlobalContext(readonly?: boolean): ReadableGlobalContext | Wr
         registerProvider
     };
 }
+
+/**
+ * Gets a readable access point to the global DI container
+ * 
+ * @return A readable global context container
+ */
+export function getGlobalContext(): ReadableGlobalContext {
+    return useGlobalContext();
+}

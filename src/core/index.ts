@@ -7,7 +7,8 @@ export {
     ServiceKey,
     AsyncServiceKey,
     type FactoryFunction,
-    type AsyncFactoryFunction
+    type AsyncFactoryFunction,
+    getGlobalContext
 } from "@/context";
 
 // Shell classes
