@@ -23,9 +23,9 @@ export function useDialogControl<Instance extends DialogControl>(cls: DialogCont
         throw new MissingComponentMetadataError("Dialog");
     }
 
-    const control: DialogControl | undefined = (instance.vnode.props as any)[propSymbol];
+    const control: Instance | undefined = (instance.vnode.props as any)[propSymbol];
     if (control instanceof cls) {
-        useViewModelInstance(control);
+        useViewModelInstance(control as any);
         return control;
     }
 

@@ -13,6 +13,7 @@
     "author": "Christoph Koschel",
     "bugs": "https://github.com/bytelab-studio/vue-mvvm/issues",
     "repository": "https://github.com/bytelab-studio/vue-mvvm",
+    "homepage": "https://vue-mvvm.bytelab.studio/",
     "main": "./dist/vue-mvvm.mjs",
     "types": "./dist/vue-mvvm.d.mts",
     "exports": {
@@ -31,6 +32,10 @@
         "./alert": {
             "import": "./dist/vue-mvvm-alert.mjs",
             "types": "./dist/vue-mvvm-alert.d.mts"
+        },
+        "./toast": {
+            "import": "./dist/vue-mvvm-toast.mjs",
+            "types": "./dist/vue-mvvm-toast.d.mts"
         }
     },
     "type": "module",
@@ -41,7 +46,11 @@
     ],
     "scripts": {
         "build:dev": "tsdown --sourcemap --watch",
-        "build:prod": "tsdown --minify"
+        "build:prod": "tsdown --minify",
+        "docs:dev": "vitepress dev docs",
+        "docs:build": "vitepress build docs",
+        "docs:preview": "vitepress preview docs",
+        "docs:api": "typedoc"
     },
     "peerDependencies": {
         "vue": "^3.5.24",
@@ -49,7 +58,12 @@
     },
     "devDependencies": {
         "@types/node": "^24.10.1",
+        "mermaid": "^11.12.1",
         "tsdown": "^0.16.5",
-        "typescript": "~5.9.3"
+        "typedoc": "^0.28.17",
+        "typedoc-plugin-markdown": "^4.10.0",
+        "typedoc-vitepress-theme": "^1.1.2",
+        "typescript": "~5.9.3",
+        "vitepress": "^1.6.4"
     }
 }

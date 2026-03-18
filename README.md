@@ -7,7 +7,7 @@
 A lightweight set of MVVM utilities for Vue 3 that helps you structure apps with typed ViewModels, reusable
 UserControls, a tiny DI container, and simple router helpers.
 
-> **Note:** That `vue-mvvm` is in early stage development. So not all features might run stable or stay the same
+> **Note:** `vue-mvvm` is in early-stage development, so not all features may be stable.
 
 ## ✨ Features
 
@@ -27,6 +27,11 @@ npm install vue-mvvm
 ## 🧩 Example
 
 See the examples in the `/sample` folder
+
+## 🧩 Documentation
+
+See the [documentation](https://vue-mvvm.bytelab.studio/overview.html) for a Overview
+or [code API](https://vue-mvvm.bytelab.studio/capi/) for deep functionality.
 
 ## 📝 License
 

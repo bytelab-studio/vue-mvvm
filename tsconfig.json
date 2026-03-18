@@ -5,14 +5,17 @@
         "forceConsistentCasingInFileNames": true,
         "resolveJsonModule": true,
         "esModuleInterop": true,
+        "skipLibCheck": true,
         "strict": true,
         "paths": {
             "vue-mvvm": ["./src/core/index.ts"],
-            "@/*": ["./src/core/*", "./src/router/*", "./src/dialog/*", "./src/alert/*"],
+            "@/*": ["./src/core/*", "./src/router/*", "./src/dialog/*", "./src/alert/*", "./src/toast/*"],
             "@hook/*": ["./src/core/hooks/*", "./src/dialog/hooks/*"]
         }
     },
     "exclude": [
-        "dist/**/*"
+        "dist/**/*",
+        "sample/**/*",
+        "node_modules/**/*"
     ]
 }

@@ -5,7 +5,7 @@ import {propSymbol as dialogControlSymbol} from "@/hooks/useDialogControl";
 import type {DialogControl, DialogControlConstructor} from "@/DialogControl";
 import {WeakArray} from "@/WeakArray";
 
-const dialogRegistry: WeakArray<DialogControl> = new WeakArray<DialogControl>()
+const dialogRegistry: WeakArray<DialogControl> = new WeakArray<DialogControl>();
 const providerRegistry: Set<Function> = new Set<Function>();
 
 /**
@@ -55,7 +55,6 @@ export class DialogService {
      *     }
      * }
      *
-     *
      */
     public initDialog<Instance extends DialogControl, const Arguments extends [...unknown[]]>(cls: DialogControlConstructor<Instance, Arguments>, ...args: Arguments): Instance {
         const instance: Instance = new cls(...args);
@@ -71,8 +70,6 @@ export class DialogService {
 
 /**
  * DialogProvider is a Vue.js component responsible for managing and rendering DialogControls dynamically.
- *
- * It acts as a provider for dialog services, allowing proper registration and lifecycle management of dialogs.
  */
 export const DialogProvider = defineComponent({
     name: "DialogProvider",
@@ -83,7 +80,7 @@ export const DialogProvider = defineComponent({
         providerRegistry.delete(this.$forceUpdate);
     },
     setup() {
-        return () => h(Fragment, null, dialogRegistry.filter(dialog => !dialog.destroyed.value).map(dialog => h((dialog.constructor as DialogControlConstructor<any>).component, {
+        return () => h(Fragment, null, dialogRegistry.filter(dialog => !dialog.destroyed).map(dialog => h((dialog.constructor as DialogControlConstructor<any>).component, {
             [dialogControlSymbol]: dialog
         })));
     }
