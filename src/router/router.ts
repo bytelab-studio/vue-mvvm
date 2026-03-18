@@ -6,6 +6,7 @@ import {
     createWebHistory,
     Router,
     RouteRecordRaw,
+    RouteRecordSingleView,
     RouterHistory
 } from "vue-router";
 import {AppShell, syncio, ViewModelConstructor, WritableGlobalContext} from "vue-mvvm";
@@ -74,7 +75,7 @@ export interface RouteAdapter {
      * This method allows implementing route-level restrictions or validations
      * before granting access to a specific route within the application.
      *
-     * @return {RouteAdapterGuardReturn} The result of the guard evaluation, which is either `true` or another
+     * @return The result of the guard evaluation, which is either `true` or another
      * `ViewModel` to which the router should redirect. On redirection the guard, if defined,
      * of the redirecting item will be executed
      */
@@ -89,6 +90,8 @@ export interface RouteAdapter {
      * The type definition of path parameters ("/:myID") in the path property
      */
     params?: Record<string, RouteParamTypes>;
+
+    native?: Omit<RouteRecordSingleView, "component" | "path" | "beforeEnter" | "children">;
 }
 
 export type RoutableViewModel = ViewModelConstructor & {
@@ -741,10 +744,14 @@ hookPlugin((app: App, config: AppShell, ctx: WritableGlobalContext) => {
                 } satisfies RouteRecordRaw;
             }
 
+            const native: RouteAdapter["native"] = view.route.native;
+            
             return {
+                ...native,
                 path: view.route.path,
                 component: view.component,
                 meta: {
+                    ...native?.meta ?? {},
                     [metaSymbol]: view
                 }
             } satisfies RouteRecordRaw;
