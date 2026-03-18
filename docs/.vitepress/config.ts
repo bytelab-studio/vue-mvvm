@@ -14,6 +14,10 @@ export default defineConfig({
     title: "vue-mvvm",
     description: "A VitePress Site",
     themeConfig: {
+        search: {
+            provider: 'local'
+        },
+
         // https://vitepress.dev/reference/default-theme-config
         nav: [
             {text: "Home", link: "/"},
