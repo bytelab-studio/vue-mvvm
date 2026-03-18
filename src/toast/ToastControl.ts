@@ -129,6 +129,10 @@ export abstract class ProgressToastControl extends ToastControl<ProgressToastOpt
      * @param milliseconds - The delay in milliseconds. Defaults to 5000.
      */
     public destroyAfter(milliseconds: number = 5000): void {
+        if (this.timeoutId != -1) {
+            clearTimeout(this.timeoutId);
+        }
+
         this.timeoutId = setTimeout(async () => {
             this.timeoutId = -1;
             await this.destroy();

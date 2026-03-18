@@ -22,13 +22,14 @@ production environments and implementations can change rapidly.
 
 ## Package Structure
 
-`vue-mvvm` is distributed as three separate entry points to support modular adoption:
+`vue-mvvm` is distributed as four separate entry points to support modular adoption:
 
 | Module | Import Path       | Purpose                                                       |
 |--------|-------------------|---------------------------------------------------------------|
 | Core   | `vue-mvvm`        | Essential MVVM utilities                                      |
 | Router | `vue-mvvm/router` | Plugin to enable ViewModel routing using `vue-router` package |
 | Dialog | `vue-mvvm/dialog` | Plugin for easy dialog management from ViewModel code         |
+| Toast  | `vue-mvvm/toast`  | Plugin for showing informational and progress toasts          |
 
 Any module beyond Core is optional and will be tree-shaken when unused.
 
