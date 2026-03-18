@@ -32,6 +32,10 @@
         "./alert": {
             "import": "./dist/vue-mvvm-alert.mjs",
             "types": "./dist/vue-mvvm-alert.d.mts"
+        },
+        "./toast": {
+            "import": "./dist/vue-mvvm-toast.mjs",
+            "types": "./dist/vue-mvvm-toast.d.mts"
         }
     },
     "type": "module",
