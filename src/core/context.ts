@@ -48,6 +48,13 @@ export interface WritableGlobalContext extends ReadableGlobalContext {
      * @param handler - A factory function that provides the mocked behavior for the service.
      */
     mockService(key: new (...args: any[]) => any, handler: FactoryFunction<unknown>): void;
+
+    /**
+     * Creates a ReadableGlobalContext from this WritableGlobalContext reference
+     *
+     * @return A ReadableGlobalContext
+     */
+    toReadableGlobalContext(): ReadableGlobalContext;
 }
 
 /**
@@ -222,13 +229,20 @@ export function useGlobalContext(readonly?: boolean): ReadableGlobalContext | Wr
 
         mockService,
 
-        registerProvider
+        registerProvider,
+
+        toReadableGlobalContext(): ReadableGlobalContext {
+            return {
+                getService: this.getService,
+                getProviders: this.getProviders
+            }
+        }
     };
 }
 
 /**
  * Gets a readable access point to the global DI container
- * 
+ *
  * @return A readable global context container
  */
 export function getGlobalContext(): ReadableGlobalContext {

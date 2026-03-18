@@ -8,7 +8,7 @@ import {
     RouteRecordRaw,
     RouterHistory
 } from "vue-router";
-import {AppShell, syncio, ViewModelConstructor, WritableGlobalContext} from "vue-mvvm";
+import {AppShell, ReadableGlobalContext, syncio, ViewModelConstructor, WritableGlobalContext} from "vue-mvvm";
 
 import {RouterProvider} from "@/RouterProvider";
 import {hookPlugin} from "@/plugin";
@@ -78,7 +78,7 @@ export interface RouteAdapter {
      * `ViewModel` to which the router should redirect. On redirection the guard, if defined,
      * of the redirecting item will be executed
      */
-    guard?(): RouteAdapterGuardReturn;
+    guard?(ctx: ReadableGlobalContext): RouteAdapterGuardReturn;
 
     /**
      * The path that the Item should listen to. Follows the same syntax like the vue-router path definition syntax
@@ -289,7 +289,7 @@ hookPlugin((app: App, config: AppShell, ctx: WritableGlobalContext) => {
         if (!component.route.guard) {
             return;
         }
-        let result: Awaited<RouteAdapterGuardReturn> = await syncio.ensureSync(component.route.guard());
+        let result: Awaited<RouteAdapterGuardReturn> = await syncio.ensureSync(component.route.guard(ctx.toReadableGlobalContext()));
 
         if (typeof result == "boolean" && result) {
             return true;
