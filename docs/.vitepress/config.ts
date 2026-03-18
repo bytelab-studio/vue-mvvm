@@ -52,6 +52,7 @@ export default defineConfig({
                     {text: "Router", link: "/extensions/router"},
                     {text: "Dialog", link: "/extensions/dialog"},
                     {text: "Alert", link: "/extensions/alert"},
+                    {text: "Toast", link: "/extensions/toast"},
                 ]
             },
             {

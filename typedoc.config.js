@@ -12,7 +12,8 @@ export default {
     path.resolve(__dirname, "./src/core/index.ts"),
     path.resolve(__dirname, "./src/router/index.ts"),
     path.resolve(__dirname, "./src/dialog/index.ts"),
-    path.resolve(__dirname, "./src/alert/index.ts")
+    path.resolve(__dirname, "./src/alert/index.ts"),
+    path.resolve(__dirname, "./src/toast/index.ts")
   ],
 
   tsconfig: path.resolve(__dirname, "./tsconfig.json"),
