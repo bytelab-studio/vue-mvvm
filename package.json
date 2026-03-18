@@ -13,6 +13,7 @@
     "author": "Christoph Koschel",
     "bugs": "https://github.com/bytelab-studio/vue-mvvm/issues",
     "repository": "https://github.com/bytelab-studio/vue-mvvm",
+    "homepage": "https://vue-mvvm.bytelab.studio/",
     "main": "./dist/vue-mvvm.mjs",
     "types": "./dist/vue-mvvm.d.mts",
     "exports": {
