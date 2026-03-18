@@ -172,7 +172,7 @@ this.dialogService.initDialog(MyDialogModel, "Title", 42); // Type-checked argum
 
 ## Action Pattern with Dialogs
 
-Since `DialogControl` extends `UserControl`, it works perfectly with the [Action Pattern](./api/action). You can `await`
+Since `DialogControl` extends `UserControl`, it works perfectly with the [Action Pattern](/api/action). You can `await`
 a result from a dialog:
 
 ```typescript
