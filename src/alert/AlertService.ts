@@ -51,7 +51,7 @@ export class AlertService {
 
         // Automatically destroy the dialog if the user's 
         // implementation didn't destroy it by himself
-        if (!dialog.destroyed.value) {
+        if (!dialog.destroyed) {
             dialog.destroy();
         }
     }
@@ -76,7 +76,7 @@ export class AlertService {
 
         // Automatically destroy the dialog if the user's 
         // implementation didn't destroy it by himself
-        if (!dialog.destroyed.value) {
+        if (!dialog.destroyed) {
             dialog.destroy();
         }
 
