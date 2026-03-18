@@ -1,10 +1,8 @@
 import path from "path";
 import { fileURLToPath } from "url";
 
-/** @type {import("typedoc").TypeDocOptions} */
-
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
+/** @type {import("typedoc").TypeDocOptions} */
 export default {
   entryPointStrategy: "expand",
 
@@ -30,6 +28,7 @@ export default {
   cleanOutputDir: true,
   disableSources: true,
   categorizeByGroup: true,
+  excludeInternal: true,
 
   textContentMappings: {
     "title.indexPage": "API Reference",
