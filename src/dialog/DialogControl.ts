@@ -1,4 +1,4 @@
-import {Component, readonly, ref, Ref, warn} from "vue";
+import {Component, warn} from "vue";
 
 import {syncio, UserControl, type UserControlConstructor} from "vue-mvvm";
 
@@ -17,15 +17,13 @@ export type DialogControlConstructor<T extends DialogControl = DialogControl, Ar
  * Subclasses must implement `onOpen` and `onClose` methods to define specific behavior when the dialog is requested to open or close.
  */
 export abstract class DialogControl extends UserControl implements Disposable {
-    public destroyed: Readonly<Ref<boolean>>
+    private _destroyed: boolean = this.ref(false);
 
-    private readonly _destroyed: Ref<boolean>;
+    public readonly destroyed: boolean = this.computed(() => this._destroyed);
+
 
     public constructor() {
         super();
-
-        this._destroyed = ref(false);
-        this.destroyed = readonly(this._destroyed);
     }
 
     /**
@@ -44,7 +42,7 @@ export abstract class DialogControl extends UserControl implements Disposable {
      * If the dialog has been destroyed, a warning is logged, and the method exits.
      */
     public async openDialog(): Promise<void> {
-        if (this.destroyed.value) {
+        if (this.destroyed) {
             warn("Dialog open was requested, but this dialog has already been destroyed.");
             return;
         }
@@ -59,7 +57,7 @@ export abstract class DialogControl extends UserControl implements Disposable {
      * If the dialog has been destroyed, a warning is logged, and the method exits.
      */
     public async closeDialog(): Promise<void> {
-        if (this.destroyed.value) {
+        if (this.destroyed) {
             warn("Dialog close was requested, but this dialog has already been destroyed.");
             return;
         }
@@ -71,7 +69,7 @@ export abstract class DialogControl extends UserControl implements Disposable {
      * Marks the current instance as destroyed. Additionally it will not longer be rendered by the {@link DialogProvider}
      */
     public destroy(): void {
-        this._destroyed.value = true;
+        this._destroyed = true;
     }
 
     public [Symbol.dispose](): void {
