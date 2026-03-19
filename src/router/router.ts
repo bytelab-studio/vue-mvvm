@@ -406,7 +406,7 @@ export class RouterParams {
      * Throws an error if the parameter does not exist or cannot be parsed
      * as a safe integer.
      *
-     * @param name   - The query parameter name.
+     * @param name   - The parameter name.
      * @param many   - Reads multiple values of the parameter (See overload).
      *
      * @throws If the parameter is missing or cannot be parsed.
@@ -569,7 +569,7 @@ export class RouterParams {
     }
 
     private getStringOrDefaultMany(name: string): string[] | null {
-        const raw: string | null | Array<string | null> | undefined = this.router.currentRoute.value.query[name];
+        const raw: string | null | Array<string | null> | undefined = this.router.currentRoute.value.params[name];
         if (typeof raw == "undefined" || raw == null) {
             return null;
         }
@@ -582,7 +582,7 @@ export class RouterParams {
     }
 
     private getStringOrDefaultSingle(name: string): string | null {
-        const raw: string | null | Array<string | null> | undefined = this.router.currentRoute.value.query[name];
+        const raw: string | null | Array<string | null> | undefined = this.router.currentRoute.value.params[name];
         if (typeof raw == "undefined" || raw == null || Array.isArray(raw)) {
             return null;
         }

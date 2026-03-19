@@ -9,8 +9,15 @@ import {setContainerComponent, ToastProvider} from "@/ToastProvider";
 export {useToastControl} from "@/hook/useToastControl";
 export * from "@/ToastControl";
 export {
-    ToastProvider,
-    ToastService
+    ToastOptions,
+    ProgressToastOptions,
+    InfoToastOptions,
+    ToastService,
+    ProgressComponentNotFoundError,
+    InfoComponentNotFoundError
+} from "@/ToastService";
+export {
+    ToastProvider
 }
 
 declare module "vue-mvvm" {

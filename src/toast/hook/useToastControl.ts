@@ -2,6 +2,7 @@ import {ComponentInternalInstance, getCurrentInstance} from "vue";
 import {ToastControl, ToastControlConstructor} from "@/ToastControl";
 import {DialogControlMismatchError, HookUsageError, MissingComponentMetadataError} from "vue-mvvm";
 import {useViewModelInstance} from "@hook/useViewModel";
+import {ToastOptions} from "@/ToastService";
 
 export const propSymbol: symbol = Symbol("vue-mvvm-toast-control");
 
@@ -15,7 +16,7 @@ export const propSymbol: symbol = Symbol("vue-mvvm-toast-control");
  * @throws {@link MissingComponentMetadataError} if the component is missing metadata.
  * @throws {@link DialogControlMismatchError} if the provided control is not an instance of the given class.
  */
-export function useToastControl<Instance extends ToastControl>(cls: ToastControlConstructor<Instance>): Instance {
+export function useToastControl<Options extends ToastOptions, Instance extends ToastControl<Options>>(cls: ToastControlConstructor<Options, Instance>): Instance {
     const instance: ComponentInternalInstance | null = getCurrentInstance();
     if (!instance) {
         throw new HookUsageError("useToastControl");
