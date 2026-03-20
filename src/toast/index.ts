@@ -9,9 +9,9 @@ import {setContainerComponent, ToastProvider} from "@/ToastProvider";
 export {useToastControl} from "@/hook/useToastControl";
 export * from "@/ToastControl";
 export {
-    ToastOptions,
-    ProgressToastOptions,
-    InfoToastOptions,
+    type ToastOptions,
+    type ProgressToastOptions,
+    type InfoToastOptions,
     ToastService,
     ProgressComponentNotFoundError,
     InfoComponentNotFoundError
