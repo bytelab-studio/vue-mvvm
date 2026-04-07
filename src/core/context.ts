@@ -106,19 +106,33 @@ function registerService<T>(key: AsyncServiceKey<T>, handler: AsyncFactoryFuncti
 function registerService<T extends new (...args: any[]) => any>(key: T, handler: FactoryFunction<InstanceType<T>>): void;
 
 function registerService<T>(key: T | ServiceKey<T> | AsyncServiceKey<T>, handler: FactoryFunction<unknown> | AsyncFactoryFunction<unknown>): void {
-    if (services.has(key)) {
+    const mapKey: string | T = key instanceof ServiceKey || key instanceof AsyncServiceKey
+        ? key.name
+        : key;
+
+    if (services.has(mapKey)) {
         throw new ServiceAlreadyRegisteredError(key);
     }
 
-    services.set(key, handler);
+    services.set(mapKey, handler);
 }
 
-function mockService(key: new (...args: any[]) => any, handler: FactoryFunction<unknown>): void {
-    if (!services.has(key)) {
+function mockService<T>(key: ServiceKey<T>, handler: FactoryFunction<T>): void;
+
+function mockService<T>(key: AsyncServiceKey<T>, handler: AsyncFactoryFunction<T>): void
+
+function mockService<T extends new (...args: any[]) => any>(key: T, handler: FactoryFunction<InstanceType<T>>): void;
+
+function mockService<T>(key: T | ServiceKey<T> | AsyncServiceKey<T>, handler: FactoryFunction<unknown> | AsyncFactoryFunction<unknown>): void {
+    const mapKey: string | T = key instanceof ServiceKey || key instanceof AsyncServiceKey
+        ? key.name
+        : key;
+
+    if (!services.has(mapKey)) {
         throw new ServiceNotRegisteredError(key);
     }
 
-    services.set(key, handler);
+    services.set(mapKey, handler);
 }
 
 function getProviders(): Component[] {
@@ -132,13 +146,17 @@ function getService<T>(key: ServiceKey<T>): T;
 function getService<T>(key: AsyncServiceKey<T>): Promise<T>;
 
 function getService<T>(key: T | ServiceKey<T> | AsyncServiceKey<T>): unknown | Promise<unknown> {
-    let instance: unknown | undefined = serviceInstances.get(key);
+    const mapKey: string | T = key instanceof ServiceKey || key instanceof AsyncServiceKey
+        ? key.name
+        : key;
+
+    let instance: unknown | undefined = serviceInstances.get(mapKey);
 
     if (instance) {
         return instance;
     }
 
-    const factory: FactoryFunction<unknown> | AsyncFactoryFunction<unknown> | undefined = services.get(key);
+    const factory: FactoryFunction<unknown> | AsyncFactoryFunction<unknown> | undefined = services.get(mapKey);
 
     if (!factory) {
         throw new ServiceNotRegisteredError(key);
@@ -152,7 +170,7 @@ function getService<T>(key: T | ServiceKey<T> | AsyncServiceKey<T>): unknown | P
                 return;
             }
 
-            serviceInstances.set(key, instance);
+            serviceInstances.set(mapKey, instance);
             resolve(instance);
         });
     }
@@ -162,7 +180,7 @@ function getService<T>(key: T | ServiceKey<T> | AsyncServiceKey<T>): unknown | P
         throw new InvalidServiceInstanceError(key);
     }
 
-    serviceInstances.set(key, instance);
+    serviceInstances.set(mapKey, instance);
     return instance;
 }
 
@@ -170,16 +188,14 @@ function getService<T>(key: T | ServiceKey<T> | AsyncServiceKey<T>): unknown | P
  * Can be used to register a service that lives not in a class.
  */
 export class ServiceKey<T> {
-    private readonly name?: string;
+    public readonly name: string;
 
-    public constructor(name?: string) {
+    public constructor(name: string) {
         this.name = name;
     }
 
-    public [Symbol.toPrimitive]() {
-        return this.name
-            ? this.name
-            : this;
+    public [Symbol.toPrimitive](): string {
+        return this.name;
     }
 }
 
@@ -188,16 +204,14 @@ export class ServiceKey<T> {
  * Additionally, the factory function is defined as async.
  */
 export class AsyncServiceKey<T> {
-    private readonly name?: string;
+    public readonly name: string;
 
-    public constructor(name?: string) {
+    public constructor(name: string) {
         this.name = name;
     }
 
-    public [Symbol.toPrimitive]() {
-        return this.name
-            ? this.name
-            : this;
+    public [Symbol.toPrimitive](): string {
+        return this.name;
     }
 }
 
