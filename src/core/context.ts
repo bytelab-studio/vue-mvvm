@@ -1,5 +1,5 @@
-import {InvalidServiceInstanceError, ServiceAlreadyRegisteredError, ServiceNotRegisteredError} from "@/errors";
 import {Component} from "vue";
+import {InvalidServiceInstanceError, ServiceAlreadyRegisteredError, ServiceNotRegisteredError} from "@/errors";
 
 export type FactoryFunction<T> = (ctx: ReadableGlobalContext) => T;
 
@@ -91,98 +91,173 @@ export interface ReadableGlobalContext {
     getService<T>(key: AsyncServiceKey<T>): Promise<T>;
 }
 
-const providers: Set<Component> = new Set<Component>();
-const services: Map<unknown, FactoryFunction<unknown> | AsyncFactoryFunction<unknown>> = new Map<unknown, FactoryFunction<unknown> | AsyncFactoryFunction<unknown>>();
-const serviceInstances: Map<unknown, unknown> = new Map<unknown, unknown>();
+/**
+ * A container that manages dependency injection, including service registration,
+ * resolution, and provider components.
+ */
+export class DIContainer implements WritableGlobalContext {
+    private readonly providers: Set<Component> = new Set<Component>();
+    private readonly services: Map<unknown, FactoryFunction<unknown> | AsyncFactoryFunction<unknown>> = new Map<unknown, FactoryFunction<unknown> | AsyncFactoryFunction<unknown>>();
+    private readonly serviceInstances: Map<unknown, unknown> = new Map<unknown, unknown>();
 
-function registerProvider(provider: Component): void {
-    providers.add(provider);
-}
-
-function registerService<T>(key: ServiceKey<T>, handler: FactoryFunction<T>): void;
-
-function registerService<T>(key: AsyncServiceKey<T>, handler: AsyncFactoryFunction<T>): void
-
-function registerService<T extends new (...args: any[]) => any>(key: T, handler: FactoryFunction<InstanceType<T>>): void;
-
-function registerService<T>(key: T | ServiceKey<T> | AsyncServiceKey<T>, handler: FactoryFunction<unknown> | AsyncFactoryFunction<unknown>): void {
-    const mapKey: string | T = key instanceof ServiceKey || key instanceof AsyncServiceKey
-        ? key.name
-        : key;
-
-    if (services.has(mapKey)) {
-        throw new ServiceAlreadyRegisteredError(key);
+    /**
+     * Registers a provider component.
+     *
+     * @param provider - The Vue component to register as a provider.
+     */
+    public registerProvider(provider: Component): void {
+        this.providers.add(provider);
     }
 
-    services.set(mapKey, handler);
-}
+    /**
+     * Registers a service with a specified key and factory function.
+     *
+     * @param key     - The key used to identify the service.
+     * @param handler - A factory function that creates an instance of the service.
+     */
+    public registerService<T>(key: ServiceKey<T>, handler: FactoryFunction<T>): void;
+    /**
+     * Registers an asynchronous service with a specified key and factory function.
+     *
+     * @param key     - The key used to identify the service.
+     * @param handler - An asynchronous factory function that creates an instance of the service.
+     */
+    public registerService<T>(key: AsyncServiceKey<T>, handler: AsyncFactoryFunction<T>): void
+    /**
+     * Registers a service with a constructor key and factory function.
+     *
+     * @param key     - The constructor function used as the key.
+     * @param handler - A factory function that creates an instance of the service.
+     */
+    public registerService<T extends new (...args: any[]) => any>(key: T, handler: FactoryFunction<InstanceType<T>>): void;
+    public registerService<T>(key: T | ServiceKey<T> | AsyncServiceKey<T>, handler: FactoryFunction<unknown> | AsyncFactoryFunction<unknown>): void {
+        const mapKey: string | T = key instanceof ServiceKey || key instanceof AsyncServiceKey
+            ? key.name
+            : key;
 
-function mockService<T>(key: ServiceKey<T>, handler: FactoryFunction<T>): void;
+        if (this.services.has(mapKey)) {
+            throw new ServiceAlreadyRegisteredError(key);
+        }
 
-function mockService<T>(key: AsyncServiceKey<T>, handler: AsyncFactoryFunction<T>): void
-
-function mockService<T extends new (...args: any[]) => any>(key: T, handler: FactoryFunction<InstanceType<T>>): void;
-
-function mockService<T>(key: T | ServiceKey<T> | AsyncServiceKey<T>, handler: FactoryFunction<unknown> | AsyncFactoryFunction<unknown>): void {
-    const mapKey: string | T = key instanceof ServiceKey || key instanceof AsyncServiceKey
-        ? key.name
-        : key;
-
-    if (!services.has(mapKey)) {
-        throw new ServiceNotRegisteredError(key);
+        this.services.set(mapKey, handler);
     }
 
-    services.set(mapKey, handler);
-}
+    /**
+     * Mocks a service by providing a custom implementation for the specified key.
+     *
+     * @param key     - The key used to identify the service to be mocked.
+     * @param handler - A factory function that provides the mocked behavior.
+     */
+    public mockService<T>(key: ServiceKey<T>, handler: FactoryFunction<T>): void;
+    /**
+     * Mocks an asynchronous service by providing a custom implementation for the specified key.
+     *
+     * @param key     - The key used to identify the service to be mocked.
+     * @param handler - An asynchronous factory function that provides the mocked behavior.
+     */
+    public mockService<T>(key: AsyncServiceKey<T>, handler: AsyncFactoryFunction<T>): void
+    /**
+     * Mocks a service with a constructor key.
+     *
+     * @param key     - The constructor function used as the key.
+     * @param handler - A factory function that provides the mocked behavior.
+     */
+    public mockService<T extends new (...args: any[]) => any>(key: T, handler: FactoryFunction<InstanceType<T>>): void;
+    public mockService<T>(key: T | ServiceKey<T> | AsyncServiceKey<T>, handler: FactoryFunction<unknown> | AsyncFactoryFunction<unknown>): void {
+        const mapKey: string | T = key instanceof ServiceKey || key instanceof AsyncServiceKey
+            ? key.name
+            : key;
 
-function getProviders(): Component[] {
-    return Array.from(providers);
-}
+        if (!this.services.has(mapKey)) {
+            throw new ServiceNotRegisteredError(key);
+        }
 
-function getService<T extends new (...args: any[]) => any>(key: T): InstanceType<T>;
+        this.services.set(mapKey, handler);
+    }
 
-function getService<T>(key: ServiceKey<T>): T;
+    /**
+     * Retrieves all registered provider components.
+     *
+     * @returns An array of registered provider components.
+     */
+    public getProviders(): Component[] {
+        return Array.from(this.providers);
+    }
 
-function getService<T>(key: AsyncServiceKey<T>): Promise<T>;
+    /**
+     * Retrieves a service instance by its constructor.
+     *
+     * @param key - The constructor function of the service.
+     * @returns The instance of the requested service.
+     */
+    public getService<T extends new (...args: any[]) => any>(key: T): InstanceType<T>;
+    /**
+     * Retrieves a service instance by its ServiceKey.
+     *
+     * @param key - The ServiceKey of the service.
+     * @returns The instance of the requested service.
+     */
+    public getService<T>(key: ServiceKey<T>): T;
+    /**
+     * Retrieves a service instance asynchronously by its AsyncServiceKey.
+     *
+     * @param key - The AsyncServiceKey of the service.
+     * @returns A promise that resolves with the instance of the requested service.
+     */
+    public getService<T>(key: AsyncServiceKey<T>): Promise<T>;
+    public getService<T>(key: T | ServiceKey<T> | AsyncServiceKey<T>): unknown | Promise<unknown> {
+        const mapKey: string | T = key instanceof ServiceKey || key instanceof AsyncServiceKey
+            ? key.name
+            : key;
 
-function getService<T>(key: T | ServiceKey<T> | AsyncServiceKey<T>): unknown | Promise<unknown> {
-    const mapKey: string | T = key instanceof ServiceKey || key instanceof AsyncServiceKey
-        ? key.name
-        : key;
+        let instance: unknown | undefined = this.serviceInstances.get(mapKey);
 
-    let instance: unknown | undefined = serviceInstances.get(mapKey);
+        if (instance) {
+            return instance;
+        }
 
-    if (instance) {
+        const factory: FactoryFunction<unknown> | AsyncFactoryFunction<unknown> | undefined = this.services.get(mapKey);
+
+        if (!factory) {
+            throw new ServiceNotRegisteredError(key);
+        }
+
+        if (key instanceof AsyncServiceKey) {
+            return new Promise<unknown>(async (resolve, reject) => {
+                const instance: unknown = await factory(this.toReadableGlobalContext());
+                if (!instance) {
+                    reject(new InvalidServiceInstanceError(key));
+                    return;
+                }
+
+                this.serviceInstances.set(mapKey, instance);
+                resolve(instance);
+            });
+        }
+
+        instance = factory(this.toReadableGlobalContext());
+        if (!instance) {
+            throw new InvalidServiceInstanceError(key);
+        }
+
+        this.serviceInstances.set(mapKey, instance);
         return instance;
     }
 
-    const factory: FactoryFunction<unknown> | AsyncFactoryFunction<unknown> | undefined = services.get(mapKey);
-
-    if (!factory) {
-        throw new ServiceNotRegisteredError(key);
+    /**
+     * Creates a ReadableGlobalContext from this DIContainer instance.
+     *
+     * @returns A read-only interface to the container.
+     */
+    public toReadableGlobalContext(): ReadableGlobalContext {
+        return {
+            getService: this.getService.bind(this),
+            getProviders: this.getProviders.bind(this)
+        };
     }
-
-    if (key instanceof AsyncServiceKey) {
-        return new Promise<unknown>(async (resolve, reject) => {
-            const instance: unknown = await factory(useGlobalContext(true));
-            if (!instance) {
-                reject(new InvalidServiceInstanceError(key));
-                return;
-            }
-
-            serviceInstances.set(mapKey, instance);
-            resolve(instance);
-        });
-    }
-
-    instance = factory(useGlobalContext(true));
-    if (!instance) {
-        throw new InvalidServiceInstanceError(key);
-    }
-
-    serviceInstances.set(mapKey, instance);
-    return instance;
 }
+
+const globalContainer = new DIContainer();
 
 /**
  * Can be used to register a service that lives not in a class.
@@ -227,31 +302,10 @@ export function useGlobalContext(readonly?: false): WritableGlobalContext;
 
 export function useGlobalContext(readonly?: boolean): ReadableGlobalContext | WritableGlobalContext {
     if (readonly) {
-        return {
-            getProviders,
-
-            getService
-        };
+        return globalContainer.toReadableGlobalContext();
     }
 
-    return {
-        getProviders,
-
-        getService,
-
-        registerService,
-
-        mockService,
-
-        registerProvider,
-
-        toReadableGlobalContext(): ReadableGlobalContext {
-            return {
-                getService: this.getService,
-                getProviders: this.getProviders
-            }
-        }
-    };
+    return globalContainer;
 }
 
 /**
