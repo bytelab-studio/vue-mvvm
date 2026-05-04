@@ -21,7 +21,7 @@ export * from "@/MVVMApp";
 
 // Config
 export * from "@/AppShell";
-export {createMVVM} from "@/plugin";
+export {createMVVM, MVVMOptions} from "@/plugin";
 
 // Events
 export * from "@/Action";
