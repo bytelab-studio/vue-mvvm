@@ -1,8 +1,8 @@
-import {ComponentInternalInstance, getCurrentInstance} from "vue";
-import {ToastControl, ToastControlConstructor} from "@/ToastControl";
+import {type ComponentInternalInstance, getCurrentInstance} from "vue";
 import {DialogControlMismatchError, HookUsageError, MissingComponentMetadataError} from "vue-mvvm";
-import {useViewModelInstance} from "@hook/useViewModel";
-import {ToastOptions} from "@/ToastService";
+import {ToastControl, type ToastControlConstructor} from "@/ToastControl.js";
+import {useViewModelInstance} from "@hook/useViewModel.js";
+import {type ToastOptions} from "@/ToastService.js";
 
 export const propSymbol: symbol = Symbol("vue-mvvm-toast-control");
 

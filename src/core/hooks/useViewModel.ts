@@ -8,8 +8,8 @@ import {
     onUnmounted,
     onUpdated
 } from "vue";
-import {ViewModel, type ViewModelConstructor} from "@/ViewModel";
-import * as syncio from "@/syncio";
+import {ViewModel, type ViewModelConstructor} from "@/ViewModel.js";
+import * as syncio from "@/syncio.js";
 
 /**
  * Used for override protected lifecycle methods in the ViewModel

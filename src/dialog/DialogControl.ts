@@ -1,4 +1,4 @@
-import {Component, warn} from "vue";
+import {type Component, warn} from "vue";
 
 import {syncio, UserControl, type UserControlConstructor} from "vue-mvvm";
 
@@ -7,8 +7,8 @@ import {syncio, UserControl, type UserControlConstructor} from "vue-mvvm";
  */
 export type DialogControlConstructor<T extends DialogControl = DialogControl, Arguments extends [...unknown[]] = []> =
     UserControlConstructor<T, Arguments> & {
-        readonly component: Component
-    };
+    readonly component: Component
+};
 
 /**
  * Abstract base class for easily managing dialog controls in an application.

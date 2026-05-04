@@ -1,9 +1,9 @@
-import {Component, defineComponent, Fragment, h} from "vue";
+import {type Component, defineComponent, Fragment, h} from "vue";
 
-import {propSymbol as toastControlSymbol} from "@/hook/useToastControl";
+import {propSymbol as toastControlSymbol} from "@/hook/useToastControl.js";
 
-import {ToastControl, ToastControlConstructor} from "@/ToastControl";
-import {WeakArray} from "@/WeakArray";
+import {ToastControl, type ToastControlConstructor} from "@/ToastControl.js";
+import {WeakArray} from "@/WeakArray.js";
 
 export const toastRegistry: WeakArray<ToastControl> = new WeakArray<ToastControl>();
 

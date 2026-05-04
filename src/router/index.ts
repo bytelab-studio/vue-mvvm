@@ -1,6 +1,6 @@
 // Logic
-export * from "@/router";
+export * from "@/router.js";
 
 // Vue components
-export * from "@/MVVMApp";
-export * from "@/RouterProvider";
+export * from "@/MVVMApp.js";
+export * from "@/RouterProvider.js";

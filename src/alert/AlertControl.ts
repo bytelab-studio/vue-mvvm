@@ -1,5 +1,5 @@
-import {Action, ActionContext, MVVMError} from "vue-mvvm";
-import {DialogControl, DialogControlConstructor} from "@/DialogControl";
+import {type Action, ActionContext, MVVMError} from "vue-mvvm";
+import {DialogControl, type DialogControlConstructor} from "@/DialogControl.js";
 
 /**
  * Interface of Data that is required to display the alert.

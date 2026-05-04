@@ -1,8 +1,8 @@
-import {ComponentInternalInstance, getCurrentInstance} from "vue";
+import {type ComponentInternalInstance, getCurrentInstance} from "vue";
 
-import {DialogControl, DialogControlConstructor} from "@/DialogControl";
-import {useViewModelInstance} from "@hook/useViewModel";
-import {DialogControlMismatchError, HookUsageError, MissingComponentMetadataError} from "@/errors";
+import {DialogControl, type DialogControlConstructor} from "@/DialogControl.js";
+import {useViewModelInstance} from "@hook/useViewModel.js";
+import {DialogControlMismatchError, HookUsageError, MissingComponentMetadataError} from "@/errors.js";
 
 export const propSymbol: symbol = Symbol("vue-mvvm-dialog-control");
 

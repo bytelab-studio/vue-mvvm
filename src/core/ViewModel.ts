@@ -1,10 +1,10 @@
 import * as vue from "vue";
-import * as syncio from "@/syncio";
-import * as reactive from "@/reactive";
-import {type ReadableGlobalContext, useGlobalContext} from "@/context";
-import {exposeSymbol as userControlSymbol} from "@hook/useUserControl"
-import {Action, ActionContext, ActionResult} from "@/Action";
-import {UserControl} from "@/UserControl";
+import * as syncio from "@/syncio.js";
+import * as reactive from "@/reactive.js";
+import {type ReadableGlobalContext, useGlobalContext} from "@/context.js";
+import {exposeSymbol as userControlSymbol} from "@hook/useUserControl.js";
+import {type Action, ActionContext, type ActionResult} from "@/Action.js";
+import {UserControl} from "@/UserControl.js";
 
 /**
  * A type definition for a valid ViewModel class constructor.

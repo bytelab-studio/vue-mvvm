@@ -1,11 +1,11 @@
 import {type App} from "vue";
 import {type AppShell, type WritableGlobalContext} from "vue-mvvm";
 
-import {hookPlugin} from "@/plugin";
-import {DialogProvider, DialogService} from "@/DialogProvider";
+import {hookPlugin} from "@/plugin.js";
+import {DialogProvider, DialogService} from "@/DialogProvider.js";
 
-export {useDialogControl} from "@/hooks/useDialogControl";
-export * from "@/DialogControl";
+export {useDialogControl} from "@/hooks/useDialogControl.js";
+export * from "@/DialogControl.js";
 export {
     DialogProvider,
     DialogService

@@ -1,13 +1,13 @@
-import {type App, Component} from "vue";
-import {type AppShell, WritableGlobalContext} from "vue-mvvm";
+import {type App, type Component} from "vue";
+import {type AppShell, type WritableGlobalContext} from "vue-mvvm";
 
-import {hookPlugin} from "@/plugin";
-import {setInfoControl, setProgressControl, ToastService} from "@/ToastService";
-import {InfoToastConstructor, ProgressToastConstructor} from "@/ToastControl";
-import {setContainerComponent, ToastProvider} from "@/ToastProvider";
+import {hookPlugin} from "@/plugin.js";
+import {setInfoControl, setProgressControl, ToastService} from "@/ToastService.js";
+import {type InfoToastConstructor, type ProgressToastConstructor} from "@/ToastControl.js";
+import {setContainerComponent, ToastProvider} from "@/ToastProvider.js";
 
-export {useToastControl} from "@/hook/useToastControl";
-export * from "@/ToastControl";
+export {useToastControl} from "@/hook/useToastControl.js";
+export * from "@/ToastControl.js";
 export {
     type ToastOptions,
     type ProgressToastOptions,
@@ -15,7 +15,7 @@ export {
     ToastService,
     ProgressComponentNotFoundError,
     InfoComponentNotFoundError
-} from "@/ToastService";
+} from "@/ToastService.js";
 export {
     ToastProvider
 }
