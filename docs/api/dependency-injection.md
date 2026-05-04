@@ -6,6 +6,7 @@
         - [Example registration](#example-registration)
     - [Lazy instantiation](#lazy-instantiation)
     - [Service Mocking](#service-mocking)
+    - [Composability & Isolated Contexts](#composability-isolated-contexts)
 
 ## Service registration
 
@@ -137,3 +138,37 @@ export class AppConfig implements AppShell {
     }
 }
 ```
+
+## Composability & Isolated Contexts
+
+By default, `vue-mvvm` uses a single global DI context. However, for advanced scenarios or unit testing, you can create isolated DI contexts using the `DIContainer` class.
+
+This allows you to instantiate multiple independent DI containers, which is particularly useful when running tests in parallel or when you need to ensure that tests do not leak state between each other.
+
+### Using DIContainer
+
+The `DIContainer` class implements the `WritableGlobalContext` interface and provides all the methods available in the global context.
+
+```typescript
+import { DIContainer, ServiceKey } from "vue-mvvm";
+
+// Create an isolated container
+const container = new DIContainer();
+
+class MyService {
+    constructor(public value: string) {}
+}
+
+const MyKey = new ServiceKey<MyService>("MyService");
+
+// Register services in the isolated container
+container.registerService(MyKey, () => new MyService("isolated"));
+
+// Retrieve services from the isolated container
+const service = container.getService(MyKey);
+console.log(service.value); // "isolated"
+```
+
+### Unit Testing with Isolated Contexts
+
+When testing ViewModels or other components that depend on services, you can create a fresh `DIContainer` for each test case to ensure complete isolation.

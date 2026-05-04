@@ -8,7 +8,8 @@ export {
     AsyncServiceKey,
     type FactoryFunction,
     type AsyncFactoryFunction,
-    getGlobalContext
+    getGlobalContext,
+    DIContainer
 } from "@/context";
 
 // Shell classes
