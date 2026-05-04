@@ -50,6 +50,24 @@ export interface WritableGlobalContext extends ReadableGlobalContext {
     mockService(key: new (...args: any[]) => any, handler: FactoryFunction<unknown>): void;
 
     /**
+     * Mocks a service by providing a custom implementation for the specified key.
+     * This allows overriding the default behavior of a service with a custom handler.
+     *
+     * @param key     - The ServiceKey that serves as the unique identifier for the service.
+     * @param factory - A factory function that creates an instance of the service associated with the provided key.
+     */
+    mockService<T>(key: ServiceKey<T>, factory: FactoryFunction<T>): void;
+
+    /**
+     * Mocks a service by providing a custom implementation for the specified key.
+     * This allows overriding the default behavior of a service with a custom handler.
+     *
+     * @param key     - The AsyncServiceKey that serves as the unique identifier for the service.
+     * @param factory - An async factory function that creates an instance of the service associated with the provided key.
+     */
+    mockService<T>(key: AsyncServiceKey<T>, factory: AsyncFactoryFunction<T>): void;
+
+    /**
      * Creates a ReadableGlobalContext from this WritableGlobalContext reference
      *
      * @return A ReadableGlobalContext
