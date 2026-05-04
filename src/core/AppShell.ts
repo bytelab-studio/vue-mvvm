@@ -1,4 +1,4 @@
-import type {WritableGlobalContext} from "@/context";
+import type {WritableGlobalContext} from "@/context.js";
 
 /**
  * Represents the configuration shell of an MVVM application.

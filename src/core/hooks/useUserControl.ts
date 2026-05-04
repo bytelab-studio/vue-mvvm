@@ -1,9 +1,8 @@
-import {ComponentInternalInstance, getCurrentInstance, ShallowRef, useTemplateRef} from "vue";
+import {type ComponentInternalInstance, getCurrentInstance} from "vue";
 
-import {useViewModel} from "@hook/useViewModel";
-import {UserControl, UserControlConstructor} from "@/UserControl";
-import {HookUsageError} from "@/errors";
-import * as reactive from "@/reactive";
+import {useViewModel} from "@hook/useViewModel.js";
+import {UserControl, type UserControlConstructor} from "@/UserControl.js";
+import {HookUsageError} from "@/errors.js";
 
 export const exposeSymbol: symbol = Symbol("vue-mvvm-user-control");
 

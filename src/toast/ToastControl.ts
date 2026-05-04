@@ -1,7 +1,7 @@
-import {Component} from "vue";
-import {syncio, UserControl, UserControlConstructor} from "vue-mvvm";
+import {type Component} from "vue";
+import {syncio, UserControl, type UserControlConstructor} from "vue-mvvm";
 
-import {InfoToastOptions, ProgressToastOptions, ToastOptions} from "@/ToastService";
+import {type InfoToastOptions, type ProgressToastOptions, type ToastOptions} from "@/ToastService.js";
 
 /**
  * A type definition for a valid ToastControl class constructor.

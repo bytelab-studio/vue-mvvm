@@ -1,4 +1,4 @@
-import * as syncio from "@/syncio";
+import * as syncio from "@/syncio.js";
 
 /**
  * Enum representing the modes of delegation.

@@ -1,5 +1,5 @@
-import {Component} from "vue";
-import {InvalidServiceInstanceError, ServiceAlreadyRegisteredError, ServiceNotRegisteredError} from "@/errors";
+import {type Component} from "vue";
+import {InvalidServiceInstanceError, ServiceAlreadyRegisteredError, ServiceNotRegisteredError} from "@/errors.js";
 
 export type FactoryFunction<T> = (ctx: ReadableGlobalContext) => T;
 

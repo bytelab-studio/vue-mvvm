@@ -1,9 +1,9 @@
 import {defineComponent, Fragment, h} from "vue";
 
-import {propSymbol as dialogControlSymbol} from "@/hooks/useDialogControl";
+import {propSymbol as dialogControlSymbol} from "@/hooks/useDialogControl.js";
 
-import type {DialogControl, DialogControlConstructor} from "@/DialogControl";
-import {WeakArray} from "@/WeakArray";
+import type {DialogControl, DialogControlConstructor} from "@/DialogControl.js";
+import {WeakArray} from "@/WeakArray.js";
 
 const dialogRegistry: WeakArray<DialogControl> = new WeakArray<DialogControl>();
 const providerRegistry: Set<Function> = new Set<Function>();

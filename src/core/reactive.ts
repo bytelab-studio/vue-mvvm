@@ -1,5 +1,4 @@
 import * as vue from "vue";
-import {ViewModel} from "@/ViewModel";
 
 export type ReactiveField<T> = T | ReactiveMarker<T>;
 

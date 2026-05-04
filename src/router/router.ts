@@ -1,18 +1,18 @@
-import {App, Component} from "vue";
+import {type App, type Component} from "vue";
 import {
     createMemoryHistory,
     createRouter,
     createWebHashHistory,
     createWebHistory,
-    Router,
-    RouteRecordRaw,
-    RouteRecordSingleView,
-    RouterHistory
+    type Router,
+    type RouteRecordRaw,
+    type RouteRecordSingleView,
+    type RouterHistory
 } from "vue-router";
-import {AppShell, ReadableGlobalContext, syncio, ViewModelConstructor, WritableGlobalContext} from "vue-mvvm";
+import {type AppShell, type ReadableGlobalContext, syncio, type ViewModelConstructor, type WritableGlobalContext} from "vue-mvvm";
 
-import {RouterProvider} from "@/RouterProvider";
-import {hookPlugin} from "@/plugin";
+import {RouterProvider} from "@/RouterProvider.js";
+import {hookPlugin} from "@/plugin.js";
 
 declare module "vue-mvvm" {
     export namespace AppShell {

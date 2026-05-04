@@ -1,12 +1,14 @@
+import {MVVMError} from "vue-mvvm";
+
 import {
-    InfoToastConstructor,
-    InfoToastControl, ProgressToastConstructor,
+    type InfoToastConstructor,
+    InfoToastControl,
+    type ProgressToastConstructor,
     ProgressToastControl,
     ToastControl,
-    ToastControlConstructor
-} from "@/ToastControl";
-import {MVVMError} from "vue-mvvm";
-import {providerRegistry, toastRegistry} from "@/ToastProvider";
+    type ToastControlConstructor
+} from "@/ToastControl.js";
+import {providerRegistry, toastRegistry} from "@/ToastProvider.js";
 
 let infoControl: InfoToastConstructor | null = null;
 

@@ -1,6 +1,6 @@
 // Hooks
-export {useViewModel} from "@hook/useViewModel";
-export {useUserControl} from "@hook/useUserControl";
+export {useViewModel} from "@hook/useViewModel.js";
+export {useUserControl} from "@hook/useUserControl.js";
 export {
     type ReadableGlobalContext,
     type WritableGlobalContext,
@@ -10,24 +10,24 @@ export {
     type AsyncFactoryFunction,
     getGlobalContext,
     DIContainer
-} from "@/context";
+} from "@/context.js";
 
 // Shell classes
-export * from "@/ViewModel";
-export * from "@/UserControl";
+export * from "@/ViewModel.js";
+export * from "@/UserControl.js";
 
 // Components
-export * from "@/MVVMApp";
+export * from "@/MVVMApp.js";
 
 // Config
-export * from "@/AppShell";
-export {createMVVM, MVVMOptions} from "@/plugin";
+export * from "@/AppShell.js";
+export {createMVVM, type MVVMOptions} from "@/plugin.js";
 
 // Events
-export * from "@/Action";
+export * from "@/Action.js";
 
 // Utils
-export * from "@/errors";
-export * as syncio from "@/syncio";
-export * as reactive from "@/reactive";
-export * from "@/delegate";
+export * from "@/errors.js";
+export * as syncio from "@/syncio.js";
+export * as reactive from "@/reactive.js";
+export * from "@/delegate.js";

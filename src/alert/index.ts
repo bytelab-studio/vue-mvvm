@@ -1,14 +1,14 @@
 import {type App} from "vue";
-import {type AppShell, WritableGlobalContext} from "vue-mvvm";
+import {type AppShell, type WritableGlobalContext} from "vue-mvvm";
 
-import {hookPlugin} from "@/plugin";
-import {AlertControlConstructor} from "@/AlertControl";
-import {ConfirmControlConstructor} from "@/ConfirmControl";
-import {AlertService, setAlertControl, setConfirmControl} from "@/AlertService";
+import {hookPlugin} from "@/plugin.js";
+import {type AlertControlConstructor} from "@/AlertControl.js";
+import {type ConfirmControlConstructor} from "@/ConfirmControl.js";
+import {AlertService, setAlertControl, setConfirmControl} from "@/AlertService.js";
 
-export * from "@/AlertControl";
-export * from "@/ConfirmControl";
-export {AlertService} from "@/AlertService";
+export * from "@/AlertControl.js";
+export * from "@/ConfirmControl.js";
+export {AlertService} from "@/AlertService.js";
 
 declare module "vue-mvvm" {
     export namespace AppShell {

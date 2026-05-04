@@ -1,7 +1,7 @@
-import {ActionContext, ActionResult, ReadableGlobalContext, syncio} from "vue-mvvm";
-import {DialogService} from "@/DialogProvider";
-import {AlertControl, AlertControlConstructor, AlertComponentNotFoundError, AlertOptions} from "@/AlertControl";
-import {ConfirmControl, ConfirmControlConstructor, ConfirmComponentNotFoundError, ConfirmOptions} from "@/ConfirmControl";
+import {ActionContext, type ActionResult, type ReadableGlobalContext, syncio} from "vue-mvvm";
+import {DialogService} from "@/DialogProvider.js";
+import {AlertControl, type AlertControlConstructor, AlertComponentNotFoundError, type AlertOptions} from "@/AlertControl.js";
+import {ConfirmControl, type ConfirmControlConstructor, ConfirmComponentNotFoundError, type ConfirmOptions} from "@/ConfirmControl.js";
 
 let alertControl: AlertControlConstructor | null;
 
