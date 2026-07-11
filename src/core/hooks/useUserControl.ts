@@ -9,7 +9,8 @@ export const exposeSymbol: symbol = Symbol("vue-mvvm-user-control");
 /**
  * Binds a UserControl to the current View
  *
- * @param cls - The ViewModel that should be instantiated
+ * @param cls  - The ViewModel that should be instantiated
+ * @param args - The arguments of the ViewModel's constructor 
  *
  * @returns A instance of the given ViewModel class
  */
