@@ -1,6 +1,6 @@
 import {type ComponentInternalInstance, getCurrentInstance} from "vue";
 
-import {useViewModel} from "@hook/useViewModel.js";
+import {useViewModelInstance} from "@hook/useViewModel.js";
 import {UserControl, type UserControlConstructor} from "@/UserControl.js";
 import {HookUsageError} from "@/errors.js";
 
@@ -13,8 +13,9 @@ export const exposeSymbol: symbol = Symbol("vue-mvvm-user-control");
  *
  * @returns A instance of the given ViewModel class
  */
-export function useUserControl<T extends UserControl>(cls: UserControlConstructor<T>): T {
-    const vm: T = useViewModel(cls);
+export function useUserControl<Instance extends UserControl, const Arguments extends [...unknown[]]>(cls: UserControlConstructor<Instance, Arguments>, ...args: Arguments): T {
+    const vm: Instance = new cls(...arguments);
+    useViewModelInstance(vm);
 
     const instance: ComponentInternalInstance | null = getCurrentInstance();
     if (!instance) {
