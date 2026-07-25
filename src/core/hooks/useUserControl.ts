@@ -14,7 +14,7 @@ export const exposeSymbol: symbol = Symbol("vue-mvvm-user-control");
  *
  * @returns A instance of the given ViewModel class
  */
-export function useUserControl<Instance extends UserControl, const Arguments extends [...unknown[]]>(cls: UserControlConstructor<Instance, Arguments>, ...args: Arguments): T {
+export function useUserControl<Instance extends UserControl, const Arguments extends [...unknown[]]>(cls: UserControlConstructor<Instance, Arguments>, ...args: Arguments): Instance {
     const vm: Instance = new cls(...args);
     // @ts-expect-error
     useViewModelInstance(vm);
