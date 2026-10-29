@@ -1,6 +1,6 @@
 import * as vue from "vue";
 
-export type ReactiveField<T> = T | ReactiveMarker<T>;
+export type ReactiveField<T> = T & ReactiveMarker<T>;
 
 export type ReactiveMarker<T> = RefMarker<T> | ComputedMarker<T>;
 
