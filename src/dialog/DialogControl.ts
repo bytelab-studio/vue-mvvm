@@ -1,12 +1,15 @@
 import {type Component, warn} from "vue";
 
-import {syncio, UserControl, type UserControlConstructor} from "vue-mvvm";
+import {syncio, UserControl, type UserControlConstructor, type UserControlProps} from "vue-mvvm";
 
 /**
  * A type definition for a valid DialogControl class constructor.
  */
-export type DialogControlConstructor<T extends DialogControl = DialogControl, Arguments extends [...unknown[]] = []> =
-    UserControlConstructor<T, Arguments> & {
+export type DialogControlConstructor<
+    Props extends UserControlProps = {},
+    Instance extends DialogControl<Props> = DialogControl<Props>,
+    Arguments extends [...unknown[]] = []> =
+    UserControlConstructor<Props, Instance, Arguments> & {
     readonly component: Component
 };
 
@@ -16,7 +19,7 @@ export type DialogControlConstructor<T extends DialogControl = DialogControl, Ar
  * This class provides core functionality to handle the lifecycle of dialogs, including opening, closing, and destruction.
  * Subclasses must implement `onOpen` and `onClose` methods to define specific behavior when the dialog is requested to open or close.
  */
-export abstract class DialogControl extends UserControl implements Disposable {
+export abstract class DialogControl<Props extends UserControlProps = {}> extends UserControl<Props> implements Disposable {
     private _destroyed: boolean = this.ref(false);
 
     public readonly destroyed: boolean = this.computed(() => this._destroyed);
